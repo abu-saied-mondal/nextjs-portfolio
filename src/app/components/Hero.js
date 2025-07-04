@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+
 
 export default function Hero() {
   return (
@@ -10,7 +10,14 @@ export default function Hero() {
         <h2 className="hero-subheading">Software Developer</h2>
         <div className="mt-4 d-flex justify-content-center gap-3 flex-wrap">
           <button className="btn btn-orange">Got a project&#63;</button>
-          <button className="btn btn-outline-orange">My resume</button>
+           <a
+            href="https://drive.google.com/file/d/1CuN2s5JenZ6QT_PYKFtsfOM0JPwxJntf/view"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-outline-orange"
+          >
+            My resume
+          </a>
         </div>
       </div>
     </section>

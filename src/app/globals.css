@@ -1,5 +1,5 @@
 body {
-  background-color: #0f0f1b;
+  background-color: #040415;
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
@@ -8,12 +8,15 @@ body {
 
 /* Navbar Styles */
 .navbar-custom {
-  background-color: #0f0f1b;
+  background-color: transparent;
   position: sticky;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
-  border-bottom: 1px solid #2c2c38;
+  border-bottom: none;
 }
+
 
 .navbar-title {
   font-size: 1.8rem;
@@ -41,7 +44,9 @@ body {
   min-height: 100vh;
   background: url('/bg-hero.png') no-repeat center center/cover;
   position: relative;
+  /* Adjust based on navbar height */
 }
+
 
 .hero-section::before {
   content: '';
