@@ -1,14 +1,15 @@
 "use client";
+import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="flex justify-between items-center px-10 py-6 bg-dark text-white">
-      <h1 className="text-xl font-bold">Abu Saied</h1>
-      <ul className="flex space-x-6 font-medium">
-        <li><a href="#home" className="hover:text-orange-400">Home</a></li>
-        <li><a href="#about" className="hover:text-orange-400">About</a></li>
-        <li><a href="#projects" className="hover:text-orange-400">Projects</a></li>
-        <li><a href="#contact" className="hover:text-orange-400">Contacts</a></li>
+    <nav className="navbar-custom py-3 px-4 d-flex align-items-center justify-content-between">
+      <h1 className="navbar-title m-0">Abu Saied</h1>
+      <ul className="nav-links list-unstyled d-flex gap-4 m-0">
+        <li><Link href="#home" className="nav-link-custom">Home</Link></li>
+        <li><Link href="#about" className="nav-link-custom">About</Link></li>
+        <li><Link href="#projects" className="nav-link-custom">Projects</Link></li>
+        <li><Link href="#contact" className="nav-link-custom">Contacts</Link></li>
       </ul>
     </nav>
   );
