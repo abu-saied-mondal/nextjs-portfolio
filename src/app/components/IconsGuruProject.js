@@ -1,6 +1,6 @@
 export default function IconsGuruProject() {
     return (
-        <section className="py-5 iconsguru-section text-white">
+        <section id="projects" className="py-5 iconsguru-section text-white">
             <div className="container">
                 <div className="row align-items-center">
 

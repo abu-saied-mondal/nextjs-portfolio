@@ -1,6 +1,6 @@
 export default function About() {
     return (
-        <section className="about-section py-5 border-top">
+        <section id="about" className="about-section py-5 border-top">
             <div className="container">
                 <div className="row align-items-center text-white">
                     {/* Left: Services */}
