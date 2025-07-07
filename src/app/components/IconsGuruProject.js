@@ -22,24 +22,24 @@ export default function IconsGuruProject() {
                                 }}
                             ></iframe>
                         </div>
-
                     </div>
 
                     {/* Right: Description */}
                     <div className="col-md-6">
                         <h2 className="section-title mb-3 text-cyan">IconsGuru Project</h2>
                         <p className="text-light mb-3 prohead">
-                            <strong>IconsGuru</strong> is a modern web platform I built that offers a curated collection of icons for developers and designers.
-                            It allows users to easily browse, search, and download icons based on categories and tags. Features include:
+                            <strong>IconsGuru</strong> is a modern web platform I built that offers a curated collection of icons for developers and designers&#44; 
+                            enabling easy browsing&#44; searching&#44; and downloading of assets based on categories and tags
                         </p>
                         <ul className="text-light prohead">
-                            <li>🔍 Live icon search & filtering</li>
+                            <li>🔍 Live icon search &#44; filtering</li>
                             <li>🖼️ SVG preview and download support</li>
-                            <li>📁 Organized by category/tags</li>
-                            <li>⚡ Fast, responsive UI built with Next.js + Node.js + Laravel backend</li>
+                            <li>📁 Organized by category &#44; tags</li>
+                            <li>⚡ Fast&#44; responsive UI built with Next.js &#44; Node.js &#44; Laravel backend</li>
                         </ul>
                         <p className="mt-3 text-light prohead">
-                            This project reflects my ability to merge frontend polish with backend structure, offering real-time interaction, modern design, and efficient performance.
+                            This project reflects my ability to merge frontend polish with backend structure&#44; 
+                            offering real-time interaction&#44; modern design&#44; and efficient performance
                         </p>
                     </div>
                 </div>
