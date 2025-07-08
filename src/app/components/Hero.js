@@ -11,7 +11,7 @@ export default function Hero() {
         <div className="mt-4 d-flex justify-content-center gap-3 flex-wrap">
           <button className="btn btn-orange">Got a project&#63;</button>
            <a
-            href="https://drive.google.com/file/d/1CuN2s5JenZ6QT_PYKFtsfOM0JPwxJntf/view"
+            href="https://drive.google.com/file/d/1ki1FC11aE1wd6YxRjKNUZmFLWnmoBbOP/view?usp=drive_link"
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-outline-orange"
