@@ -108,14 +108,24 @@ body {
   background-color: #ffa94d;
   color: white;
 }
+/* voice style */
+
+.voice-section {
+  background-color: #111827; /* dark background */
+  color: #e5e7eb;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
 
 /* skill style */
 .skills-section {
   background-color: #111827; /* dark */
   color: #e5e7eb;
-}
-.voice-section{
-  background-color: #111827; /* dark */
 }
 
 .section-title {

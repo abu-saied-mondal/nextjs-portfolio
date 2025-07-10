@@ -94,8 +94,10 @@ const handleCommand = async (text) => {
 
 
 
-  return (
-    <section className="voice-section text-center my-5">
+ return (
+  <section className="voice-section border-top border-bottom py-5">
+    <div className="container text-center">
+      <h2 className="section-title mb-4">Voice Control</h2>
       <button
         className="btn btn-danger"
         onClick={() => {
@@ -105,10 +107,11 @@ const handleCommand = async (text) => {
       >
         {listening ? "🛑 Stop Jarvis" : "🎙️ Activate Jarvis"}
       </button>
-       <p className="mt-2 text-white small">
+      <p className="mt-3 text-white small">
         Say <strong>Jarvis</strong> to begin.
-        </p>
+      </p>
+    </div>
+  </section>
+);
 
-    </section>
-  );
 }
