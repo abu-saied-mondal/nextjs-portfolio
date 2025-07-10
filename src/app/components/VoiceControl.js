@@ -95,7 +95,7 @@ const handleCommand = async (text) => {
 
 
   return (
-    <div className="text-center my-5">
+    <div className="voice-section text-center my-5">
       <button
         className="btn btn-danger"
         onClick={() => {
@@ -106,7 +106,7 @@ const handleCommand = async (text) => {
         {listening ? "🛑 Stop Jarvis" : "🎙️ Activate Jarvis"}
       </button>
        <p className="mt-2 text-white small">
-        Say <strong>Hey Jarvis</strong> to begin.
+        Say <strong>Jarvis</strong> to begin.
         </p>
 
     </div>
