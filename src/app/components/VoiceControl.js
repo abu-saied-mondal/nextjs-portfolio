@@ -85,7 +85,7 @@ export default function VoiceControl() {
         {listening ? "🛑 Stop Jarvis" : "🎙️ Activate Jarvis"}
       </button>
        <p className="mt-2 text-white small">
-        Say <strong>&quot;Hey Jarvis&quot;</strong> to begin.
+        Say <strong>Hey Jarvis</strong> to begin.
         </p>
 
     </div>
