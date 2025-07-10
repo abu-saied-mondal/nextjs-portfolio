@@ -95,7 +95,7 @@ const handleCommand = async (text) => {
 
 
   return (
-    <div className="voice-section text-center my-5">
+    <section className="voice-section text-center my-5">
       <button
         className="btn btn-danger"
         onClick={() => {
@@ -109,6 +109,6 @@ const handleCommand = async (text) => {
         Say <strong>Jarvis</strong> to begin.
         </p>
 
-    </div>
+    </section>
   );
 }
