@@ -19,19 +19,21 @@ export default function VoiceControl() {
     recognition.interimResults = false;
 
     recognition.onresult = (event) => {
-      const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-      console.log("Heard:", transcript);
+    const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+    console.log("Heard:", transcript);
 
-      if (!activated && transcript.includes("hey jarvis")) {
+    if (!activated && transcript.includes("jarvis")) {
         speak("Welcome home, sir.");
         setActivated(true);
         return;
-      }
+    }
 
-      if (activated) {
+    if (activated) {
+        console.log("Processing command...");
         handleCommand(transcript);
-      }
+    }
     };
+
 
     recognition.onerror = (event) => {
       console.error("Speech error:", event.error);
@@ -51,27 +53,46 @@ export default function VoiceControl() {
     synth.speak(utter);
   };
 
-  const handleCommand = async (text) => {
-    let action = null;
+const handleCommand = async (text) => {
+  let action = null;
 
-    if (text.includes("recycle bin")) action = "open_recycle_bin";
-    else if (text.includes("search")) action = "open_search";
-    else if (text.includes("notepad")) action = "open_notepad";
-    else if (text.includes("select all") || text.includes("delete")) action = "select_all_delete";
-    else {
-      speak("I did not understand that, sir.");
-      return;
-    }
+  if (text.includes("recycle bin")) action = "open_recycle_bin";
+  else if (text.includes("search")) action = "open_search";
+  else if (text.includes("notepad")) action = "open_notepad";
+  else if (text.includes("select all") || text.includes("delete")) action = "select_all_delete";
+  else if (text.includes("stop listening")) {
+    speak("Goodbye sir.");
+    setActivated(false); // ✅ Only deactivate on this command
+    return;
+  } else {
+    speak("I did not understand that, sir.");
+    return;
+  }
 
-    await fetch("http://localhost:3001/command", {
+  try {
+    const response = await fetch("http://localhost:3001/command", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action }),
     });
 
+    if (!response.ok) {
+      speak("Something went wrong while executing your command, sir.");
+      console.error("Command failed:", await response.text());
+      return;
+    }
+
     speak("Done, sir.");
-    setActivated(false); // Reset after execution
-  };
+  } catch (err) {
+    console.error("Fetch error:", err);
+    speak("I couldn't reach the server, sir.");
+  }
+
+  // ❌ Do NOT reset `activated` here — let Jarvis continue listening
+  // setActivated(false);
+};
+
+
 
   return (
     <div className="text-center my-5">
