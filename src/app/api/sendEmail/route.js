@@ -20,7 +20,7 @@ export async function POST(req) {
       to: "abumondal990@gmail.com",
       subject: "Portfolio",
       html: `
-        <h2>New Contact Form Message</h2>
+        <h2>New Portfolio Message</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Message:</strong> ${message}</p>
