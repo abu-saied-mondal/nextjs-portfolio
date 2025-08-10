@@ -4,7 +4,7 @@ export async function POST(req) {
   try {
     const { name, email, message } = await req.json();
 
-    // Create transporter using Gmail SMTP
+    // Gmail SMTP transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -15,7 +15,8 @@ export async function POST(req) {
 
     // Send mail
     const info = await transporter.sendMail({
-      from: `"rana <${email}> via noreply@yourdomain.com" <${process.env.GMAIL_USER}>`, 
+      from: `"${name}" <${process.env.GMAIL_USER}>`, // Safe sender
+      replyTo: email, // When you click Reply, it goes to the entered email
       to: "abumondal990@gmail.com",
       subject: "Portfolio",
       html: `
@@ -30,6 +31,9 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("Email send error:", error);
-    return new Response(JSON.stringify({ success: false, error: error.message }), { status: 500 });
+    return new Response(
+      JSON.stringify({ success: false, error: error.message }),
+      { status: 500 }
+    );
   }
 }
