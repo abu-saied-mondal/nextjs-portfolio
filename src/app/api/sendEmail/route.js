@@ -2,30 +2,32 @@ import nodemailer from "nodemailer";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { name, email, message } = body;
+    const { name, email, message } = await req.json();
 
-    // Create transporter with Gmail SMTP
+    // Create transporter using Gmail SMTP
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER, // your Gmail address
-        pass: process.env.EMAIL_PASS, // your Gmail App Password
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS,
       },
     });
 
-    // Send the email
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // send to yourself
-      subject: `New Contact Form Submission from ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
-      html: `<p><b>Name:</b> ${name}</p>
-             <p><b>Email:</b> ${email}</p>
-             <p><b>Message:</b> ${message}</p>`,
+    // Send mail
+    const info = await transporter.sendMail({
+      from: `"rana <${email}> via noreply@yourdomain.com" <${process.env.GMAIL_USER}>`, 
+      to: "abumondal990@gmail.com",
+      subject: "Portfolio",
+      html: `
+        <h2>New Contact Form Message</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong> ${message}</p>
+      `,
     });
 
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
+    return new Response(JSON.stringify({ success: true, info }), { status: 200 });
+
   } catch (error) {
     console.error("Email send error:", error);
     return new Response(JSON.stringify({ success: false, error: error.message }), { status: 500 });
