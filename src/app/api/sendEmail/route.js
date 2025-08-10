@@ -8,14 +8,14 @@ export async function POST(req) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     // Send mail
     const info = await transporter.sendMail({
-      from: `"${name}" <${process.env.GMAIL_USER}>`, // Safe sender
+      from: `"${name}" <${process.env.EMAIL_USER}>`, // Safe sender
       replyTo: email, // When you click Reply, it goes to the entered email
       to: "abumondal990@gmail.com",
       subject: "Portfolio",
