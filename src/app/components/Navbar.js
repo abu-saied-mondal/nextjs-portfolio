@@ -1,12 +1,16 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+  import ContactModal from "./ContactModal";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+   const [isContactOpen, setIsContactOpen] = useState(false); 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+
   return (
+    <>
     <nav className="navbar-custom py-3 px-4 d-flex align-items-center justify-content-between">
       {/* Left: Logo */}
       <h1 className="navbar-title m-0 text-cyan">Abu Saied</h1>
@@ -16,7 +20,15 @@ export default function Navbar() {
         <li><Link href="#home" className="nav-link-custom text-cyan">Home</Link></li>
         <li><Link href="#about" className="nav-link-custom text-cyan">About</Link></li>
         <li><Link href="#projects" className="nav-link-custom text-cyan">Projects</Link></li>
-        <li><Link href="#contact" className="nav-link-custom text-cyan">Contacts</Link></li>
+        <li>
+            <button
+              onClick={() => setIsContactOpen(true)}
+              className="nav-link-custom text-cyan"
+              style={{ background: "none", border: "none", cursor: "pointer" }}
+            >
+              Contacts
+            </button>
+          </li>
       </ul>
 
       {/* Right: Mobile Menu Toggle (shown only on mobile) */}
@@ -67,5 +79,8 @@ export default function Navbar() {
         </ul>
       )}
     </nav>
+    {/* ✅ Contact Modal */}
+      <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
+        </>
   );
 }
