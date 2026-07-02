@@ -10,16 +10,31 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitSuccess(null);
     
-    // Simulate submission delay
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitSuccess(true);
-      setFormState({ name: "", email: "", message: "" });
+    try {
+      const response = await fetch("/api/sendEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formState),
+      });
       
-      // Clear success alert after 4 seconds
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setSubmitSuccess(true);
+        setFormState({ name: "", email: "", message: "" });
+      } else {
+        alert(data.error || "Failed to send email. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
       setTimeout(() => setSubmitSuccess(null), 4000);
-    }, 1200);
+    }
   };
 
   const handleChange = (e) => {
