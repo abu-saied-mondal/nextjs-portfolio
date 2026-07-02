@@ -1,23 +1,28 @@
+"use client";
+import React from "react";
+import SmoothScroll from "./components/SmoothScroll";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Skills from "./components/Skills";
 import About from "./components/About";
-import IconsGuruProject from "./components/IconsGuruProject";
-import VoiceControl from "./components/VoiceControl";
-
-
+import Skills from "./components/Skills";
+import Projects from "./components/Projects";
+import Experience from "./components/Experience";
+import Contact from "./components/Contact";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
-    <>
+    <SmoothScroll>
       <Navbar />
-      <main className="pt-28 px-8 bg-dark text-white min-h-screen font-sans">
+      <main className="bg-[#03030f] text-slate-200 min-h-screen">
         <Hero />
-        <VoiceControl />
-        <Skills />
-        <IconsGuruProject />
         <About />
+        <Skills />
+        <Projects />
+        <Experience />
+        <Contact />
       </main>
-    </>
+      <Footer />
+    </SmoothScroll>
   );
 }
