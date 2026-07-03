@@ -54,36 +54,36 @@ export default function Experience() {
 
   const history = [
     {
-      role: "Lead Full-Stack Engineer",
-      company: "SaaS Analytics Co.",
-      period: "2024 - Present",
-      desc: "Architected multi-tenant cloud analytical dashboard handling millions of metric payloads daily. Led a engineering team of 4 to refactor the legacy frontend into Next.js, achieving a 45% increase in Core Web Vitals score.",
+      role: "Software Developer",
+      company: "Ascinate Technology",
+      period: "Aug 2024 - Present",
+      desc: "Developing and maintaining scalable full-stack applications. Focused on API architecture, secure database connections, payment checkouts, and real-time messaging services.",
       bullets: [
-        "Established serverless GraphQL endpoints on AWS Lambda.",
-        "Refactored relational database indexes for complex reporting queries.",
-        "Built responsive dashboards utilizing real-time SVG charting engines."
+        "Built full-stack applications utilizing Next.js on the frontend and Laravel RESTful APIs on the backend.",
+        "Implemented secure payment integrations with Stripe, dynamic admin panels, and role-based access controls.",
+        "Created real-time communication modules, custom API systems, and focused heavily on server performance optimizations."
       ]
     },
     {
-      role: "Senior Full-Stack Developer",
-      company: "Apex Studio Agency",
-      period: "2022 - 2024",
-      desc: "Delivered customized high-end web applications for clients across FinTech, HealthTech, and E-Commerce sectors. Specialized in building pixel-perfect responsive layouts and high-performance interactive pages.",
+      role: "Software Developer Intern",
+      company: "Assoft Technology",
+      period: "5 Months",
+      desc: "Assisted in building custom full-stack features, maintaining web applications, and writing clean, structured code.",
       bullets: [
-        "Implemented Stripe subscription systems with localized tax automation.",
-        "Created animation systems with GSAP and WebGL, reducing interface jank.",
-        "Collaborated with design teams to define consistent component libraries."
+        "Supported API development and backend routing integrations.",
+        "Assisted in database management (MySQL) and frontend responsiveness.",
+        "Participated in agile code reviews and team collaboration."
       ]
     },
     {
-      role: "Full-Stack Developer",
-      company: "LaunchPad Tech Startup",
-      period: "2020 - 2022",
-      desc: "Developed and maintained user-facing features for a popular B2B SaaS platform. Authored automated test scripts and managed continuous integration pipelines.",
+      role: "Full Stack Development Trainee",
+      company: "QSpiders Kolkata",
+      period: "Feb 2023 - Jan 2024",
+      desc: "Completed intensive, structured training in Java and MERN stack development. Established robust object-oriented programming skills and logical problem-solving methods.",
       bullets: [
-        "Integrated third-party auth services (Auth0, OAuth2) securely.",
-        "Configured Redis cache layers to decrease page response latency by 300ms.",
-        "Wrote comprehensive unit and integration tests using Jest and Cypress."
+        "Mastered Core & Advanced Java programming, MERN stack, and DBMS foundations.",
+        "Solved logical programming problems and built data structures and algorithm foundations.",
+        "Developed full-stack practice applications, connected custom APIs, and utilized Git and Postman."
       ]
     }
   ];

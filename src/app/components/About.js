@@ -41,27 +41,27 @@ export default function About() {
   const stats = [
     {
       icon: <Briefcase className="w-6 h-6 text-[#00f2fe]" />,
-      value: "3+",
-      label: "Years of Experience",
-      desc: "Building high-performance full-stack web applications.",
+      value: "2+ Years",
+      label: "Development Experience",
+      desc: "Creating backend APIs, mobile apps, and frontend interfaces.",
     },
     {
       icon: <Award className="w-6 h-6 text-[#7000ff]" />,
-      value: "25+",
+      value: "10+",
       label: "Projects Completed",
-      desc: "From sleek SaaS landing pages to robust backend architectures.",
+      desc: "From complex SaaS products to real-time mobile platforms.",
     },
     {
       icon: <Smile className="w-6 h-6 text-[#ff7b00]" />,
-      value: "15+",
-      label: "Happy Clients",
-      desc: "Translating customer visions into functional digital products.",
+      value: "B.Tech",
+      label: "ECE Graduate",
+      desc: "Graduated with 78% marks in Electronics & Communication Engineering.",
     },
     {
       icon: <Heart className="w-6 h-6 text-[#ff007b]" />,
       value: "100%",
-      label: "Commitment",
-      desc: "Ensuring clean code, scaleability, and visual excellence.",
+      label: "Product Ownership",
+      desc: "Committed to writing clean, maintainable code from database to UI.",
     },
   ];
 
@@ -81,10 +81,10 @@ export default function About() {
             I craft clean code & high-end solutions
           </h2>
           <p className="text-slate-400 font-light leading-relaxed mb-6">
-            As a dedicated Fullstack Software Engineer, I thrive on the boundary between design and architecture. I build applications that are not only performant and secure under the hood, but also offer smooth, visually captivating user experiences.
+            As a self-motivated Fullstack Developer and Mobile Engineer, I specialize in building scalable web applications and high-performing mobile apps. With a Bachelor of Technology in Electronics and Communication Engineering, I bring strong logical thinking, object-oriented design, and architectural planning to every codebase.
           </p>
           <p className="text-slate-400 font-light leading-relaxed">
-            My engineering philosophy centers around modular architectures, optimized databases, and responsive layouts. Whether designing complex GraphQL APIs or choreographing animations using GSAP, my goal is to deliver clean code and premium usability.
+            My background spans across Java, the MERN stack, Laravel, and React Native. From building complete subscription-based icon marketplaces like IconsGeek to developing video-chat matchmaking applications, I focus on writing clean, maintainable code and taking complete ownership of product life cycles.
           </p>
         </div>
 

@@ -75,7 +75,7 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  const techStack = ["Next.js", "React", "Node.js", "GraphQL", "PostgreSQL", "AWS", "GSAP"];
+  const techStack = ["Next.js", "React Native", "Laravel", "Node.js", "Java", "MySQL", "MongoDB", "GSAP"];
 
   return (
     <section
@@ -109,7 +109,7 @@ export default function Hero() {
           ref={subtitleRef}
           className="text-xl md:text-3xl font-medium text-slate-300 mb-6 flex items-center gap-2"
         >
-          <Code className="w-6 h-6 text-[#7000ff]" /> Fullstack Software Engineer & Creative Developer
+          <Code className="w-6 h-6 text-[#7000ff]" /> Fullstack Developer & Mobile Engineer
         </h2>
 
         {/* Pitch Statement */}
@@ -117,7 +117,7 @@ export default function Hero() {
           ref={textRef}
           className="text-base md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed font-light"
         >
-          I design and develop high-performance web applications with robust architectures and buttery smooth user interfaces. Specialist in performance optimization, interactive typography, and clean layouts.
+          I design and develop high-performance web & mobile applications with robust backend APIs and buttery smooth interfaces. Specialist in mobile performance optimization, API architecture, and clean code.
         </p>
 
         {/* Call to Actions */}

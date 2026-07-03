@@ -7,9 +7,9 @@ export default function Footer() {
 
   const socialLinks = [
     { icon: <Github className="w-4 h-4" />, href: "https://github.com/abu-saied-mondal", label: "GitHub" },
-    { icon: <Linkedin className="w-4 h-4" />, href: "https://linkedin.com/in/abu-saied-mondal", label: "LinkedIn" },
+    { icon: <Linkedin className="w-4 h-4" />, href: "https://www.linkedin.com/in/abusaied990/", label: "LinkedIn" },
     { icon: <Twitter className="w-4 h-4" />, href: "https://twitter.com", label: "Twitter" },
-    { icon: <Mail className="w-4 h-4" />, href: "mailto:abu.saied.mondal@gmail.com", label: "Email" }
+    { icon: <Mail className="w-4 h-4" />, href: "mailto:abumondal990@gmail.com", label: "Email" }
   ];
 
   return (

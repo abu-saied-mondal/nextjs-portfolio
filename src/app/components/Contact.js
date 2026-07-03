@@ -45,8 +45,8 @@ export default function Contact() {
     {
       icon: <Mail className="w-5 h-5 text-[#00f2fe]" />,
       label: "Email Me",
-      value: "abu.saied.mondal@gmail.com",
-      href: "mailto:abu.saied.mondal@gmail.com"
+      value: "abumondal990@gmail.com",
+      href: "mailto:abumondal990@gmail.com"
     },
     {
       icon: <Github className="w-5 h-5 text-[#7000ff]" />,
@@ -57,13 +57,13 @@ export default function Contact() {
     {
       icon: <Linkedin className="w-5 h-5 text-[#ff7b00]" />,
       label: "LinkedIn Connect",
-      value: "linkedin.com/in/abu-saied-mondal",
-      href: "https://linkedin.com/in/abu-saied-mondal"
+      value: "linkedin.com/in/abusaied990",
+      href: "https://www.linkedin.com/in/abusaied990/"
     },
     {
       icon: <MapPin className="w-5 h-5 text-[#ff007b]" />,
       label: "Location",
-      value: "Kolkata, India",
+      value: "Kolkata, West Bengal",
       href: "#"
     }
   ];

@@ -38,28 +38,28 @@ export default function Projects() {
 
   const projects = [
     {
-      title: "Hyperion SaaS Analytics Dashboard",
-      desc: "A premium analytical dashboard featuring real-time financial tracking, customizable telemetry grids, and automated metric forecasts. Optimized for lightning-fast loads and data density.",
-      tech: ["Next.js", "Tailwind CSS", "Recharts", "Node.js", "PostgreSQL"],
+      title: "IconsGeek",
+      desc: "A subscription-based icon platform with dynamic SVG rendering, real-time customization, dynamic downloads (PNG/JPG), and Stripe checkout payments. Independently developed and deployed.",
+      tech: ["Next.js", "Laravel", "MySQL", "Stripe API", "REST APIs"],
       image: "/dashboard_mockup.png",
-      demoLink: "#",
-      gitLink: "https://github.com",
+      demoLink: "https://www.iconsgeek.com/",
+      gitLink: "https://github.com/abu-saied-mondal",
     },
     {
-      title: "Veloce E-Commerce Platform",
-      desc: "A high-fidelity storefront featuring localized multi-currency support, seamless instant checkout via Stripe, static generation for SEO optimization, and a neat administrative panel.",
-      tech: ["React", "GraphQL", "Stripe API", "Node.js", "MongoDB"],
-      image: "/ecommerce_mockup.png",
-      demoLink: "#",
-      gitLink: "https://github.com",
-    },
-    {
-      title: "Aether Cloud Orchestration Hub",
-      desc: "An orchestration workspace dashboard that helps developers manage Docker containers, view real-time log aggregates, and oversee multi-region AWS cloud nodes from a single clean viewport.",
-      tech: ["Next.js", "TypeScript", "Go", "Docker", "AWS SDK"],
+      title: "SnapHive - Photo Sharing App",
+      desc: "A full-stack mobile social application allowing users to share public/private media hives, chat, apply filters, send email invites, and generate AI-based images using Firebase storage.",
+      tech: ["React Native CLI", "Node.js", "Express", "Firebase", "AI APIs"],
       image: "/workspace_mockup.png",
       demoLink: "#",
-      gitLink: "https://github.com",
+      gitLink: "https://github.com/abu-saied-mondal",
+    },
+    {
+      title: "Louis - Video Dating App",
+      desc: "A Tinder-style matchmaking platform featuring video profile previews, swipe gesture interactions, and real-time messaging via Socket.IO. Optimized video rendering and load times.",
+      tech: ["React Native Expo", "Node.js", "Socket.IO", "MongoDB", "Video Rendering"],
+      image: "/ecommerce_mockup.png",
+      demoLink: "https://apps.apple.com/in/app/louis-dating/id6472041327",
+      gitLink: "https://github.com/abu-saied-mondal",
     },
   ];
 
