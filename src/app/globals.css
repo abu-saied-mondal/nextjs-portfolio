@@ -16,7 +16,7 @@ html,
 body {
   background-color: #03030f;
   color: #e2e8f0;
-  overflow-x: hidden;
+  overflow-x: clip; /* clip ≠ hidden: clips without creating a scroll container, so position:sticky works */
   scroll-behavior: auto; /* Lenis handles smooth scroll */
 }
 
