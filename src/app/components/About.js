@@ -55,7 +55,7 @@ export default function About() {
       icon: <Smile className="w-6 h-6 text-[#ff7b00]" />,
       value: "B.Tech",
       label: "ECE Graduate",
-      desc: "Graduated with 78% marks in Electronics & Communication Engineering.",
+      desc: "Graduated with 89% marks in Electronics & Communication Engineering.",
     },
     {
       icon: <Heart className="w-6 h-6 text-[#ff007b]" />,
