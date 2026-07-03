@@ -41,7 +41,7 @@ export default function About() {
   const stats = [
     {
       icon: <Briefcase className="w-6 h-6 text-[#00f2fe]" />,
-      value: "4.5+ Years",
+      value: "4+ Years",
       label: "Development Experience",
       desc: "Creating backend APIs, mobile apps, and frontend interfaces.",
     },
