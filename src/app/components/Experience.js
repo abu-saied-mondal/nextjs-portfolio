@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Calendar, Briefcase } from "lucide-react";
@@ -8,6 +8,60 @@ export default function Experience() {
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const progressBarRef = useRef(null);
+
+  const [history, setHistory] = useState([
+    {
+      role: "Software Developer",
+      company: "Ascinate Technology",
+      period: "Aug 2024 – Present",
+      desc: "Developing and maintaining scalable full-stack applications. Focused on API architecture, secure database connections, payment checkouts, and real-time messaging services.",
+      bullets: [
+        "Built full-stack applications using Next.js on the frontend and Laravel RESTful APIs on the backend.",
+        "Implemented secure payment integrations with Stripe, dynamic admin panels, and role-based access controls.",
+        "Created real-time communication modules, custom API systems, and focused heavily on server performance optimizations.",
+      ],
+      accent: "#ff7b00",
+    },
+    {
+      role: "Software Developer Intern",
+      company: "Assoft Technology",
+      period: "5 Months",
+      desc: "Assisted in building custom full-stack features, maintaining web applications, and writing clean, structured code.",
+      bullets: [
+        "Supported API development and backend routing integrations.",
+        "Assisted in database management (MySQL) and frontend responsiveness.",
+        "Participated in agile code reviews and team collaboration.",
+      ],
+      accent: "#00f2fe",
+    },
+    {
+      role: "Full Stack Development Trainee",
+      company: "QSpiders Kolkata",
+      period: "Feb 2023 – Jan 2024",
+      desc: "Completed intensive structured training in Java and MERN stack. Established robust OOP skills and logical problem-solving methods.",
+      bullets: [
+        "Mastered Core & Advanced Java programming, MERN stack, and DBMS foundations.",
+        "Solved logical programming problems and built data structure & algorithm foundations.",
+        "Developed full-stack practice applications, connected custom APIs, and utilized Git and Postman.",
+      ],
+      accent: "#7000ff",
+    },
+  ]);
+
+  useEffect(() => {
+    async function loadContent() {
+      try {
+        const res = await fetch("/api/content");
+        const data = await res.json();
+        if (data.success && data.experience) {
+          setHistory(data.experience);
+        }
+      } catch (err) {
+        console.error("Failed to load experience content:", err);
+      }
+    }
+    loadContent();
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -83,46 +137,7 @@ export default function Experience() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
-
-  const history = [
-    {
-      role: "Software Developer",
-      company: "Ascinate Technology",
-      period: "Aug 2024 – Present",
-      desc: "Developing and maintaining scalable full-stack applications. Focused on API architecture, secure database connections, payment checkouts, and real-time messaging services.",
-      bullets: [
-        "Built full-stack applications using Next.js on the frontend and Laravel RESTful APIs on the backend.",
-        "Implemented secure payment integrations with Stripe, dynamic admin panels, and role-based access controls.",
-        "Created real-time communication modules, custom API systems, and focused heavily on server performance optimizations.",
-      ],
-      accent: "#ff7b00",
-    },
-    {
-      role: "Software Developer Intern",
-      company: "Assoft Technology",
-      period: "5 Months",
-      desc: "Assisted in building custom full-stack features, maintaining web applications, and writing clean, structured code.",
-      bullets: [
-        "Supported API development and backend routing integrations.",
-        "Assisted in database management (MySQL) and frontend responsiveness.",
-        "Participated in agile code reviews and team collaboration.",
-      ],
-      accent: "#00f2fe",
-    },
-    {
-      role: "Full Stack Development Trainee",
-      company: "QSpiders Kolkata",
-      period: "Feb 2023 – Jan 2024",
-      desc: "Completed intensive structured training in Java and MERN stack. Established robust OOP skills and logical problem-solving methods.",
-      bullets: [
-        "Mastered Core & Advanced Java programming, MERN stack, and DBMS foundations.",
-        "Solved logical programming problems and built data structure & algorithm foundations.",
-        "Developed full-stack practice applications, connected custom APIs, and utilized Git and Postman.",
-      ],
-      accent: "#7000ff",
-    },
-  ];
+  }, [history]); // Re-trigger animations when history loads
 
   return (
     <section

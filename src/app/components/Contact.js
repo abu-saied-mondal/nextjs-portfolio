@@ -11,16 +11,14 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitSuccess(null);
-    
     try {
-      const response = await fetch("/api/sendEmail", {
+      const response = await fetch("/api/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formState),
       });
-      
       const data = await response.json();
       if (response.ok && data.success) {
         setSubmitSuccess(true);

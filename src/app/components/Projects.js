@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ExternalLink, Github, ArrowRight } from "lucide-react";
@@ -11,8 +11,9 @@ export default function Projects() {
   const progressRef = useRef(null);
   const counterRef = useRef(null);
 
-  const projects = [
+  const [projects, setProjects] = useState([
     {
+      id: "1",
       title: "ZTS India — Dynamic Corporate Portal",
       desc: "A fully dynamic corporate website built from scratch for a major Kolkata company. Features a custom WordPress-like CMS in Laravel — admins control pages, blogs, media, navigation, and SEO metadata entirely from a dashboard.",
       tech: ["Laravel", "PHP", "MySQL", "Custom CMS", "SEO Management"],
@@ -22,6 +23,7 @@ export default function Projects() {
       color: "#00f2fe",
     },
     {
+      id: "2",
       title: "Enterprise HRM Ecosystem",
       desc: "All-in-one HRM System with 25+ modules: HR Core, AI Resume Screening, Biometric/GPS Attendance, Leave Management, Payroll with Bank Transfer, LMS Training Portal, and Advanced Analytics.",
       tech: ["Laravel", "MySQL", "PostgreSQL", "AI Features", "Real-time Analytics"],
@@ -31,6 +33,7 @@ export default function Projects() {
       color: "#7000ff",
     },
     {
+      id: "3",
       title: "HerCompass — AI Health Companion",
       desc: "Personalized AI-powered health companion for women 45+. Tracks mood, symptoms, sleep, and energy — transforms daily logs into predictive, actionable wellness insights using intelligent AI pattern analysis.",
       tech: ["MERN Stack", "Node.js", "MongoDB", "AI Processing", "Predictive Analytics"],
@@ -40,6 +43,7 @@ export default function Projects() {
       color: "#ff007b",
     },
     {
+      id: "4",
       title: "IconsGeek",
       desc: "Subscription-based icon marketplace with dynamic SVG rendering, real-time color/size customization, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed.",
       tech: ["Next.js", "Laravel", "MySQL", "Stripe API", "REST APIs"],
@@ -49,6 +53,7 @@ export default function Projects() {
       color: "#00f2fe",
     },
     {
+      id: "5",
       title: "SnapHive — Photo Sharing App",
       desc: "Full-stack mobile social platform: public/private photo hives, in-app camera filters, one-tap email invites, Firebase cloud storage, real-time chat, and AI-based image generation built into the creator flow.",
       tech: ["React Native CLI", "Node.js", "Express", "Firebase", "AI APIs"],
@@ -58,6 +63,7 @@ export default function Projects() {
       color: "#ff7b00",
     },
     {
+      id: "6",
       title: "Louis — Video Dating App",
       desc: "Tinder-style matchmaking with vertical video profiles, swipe gesture UX, and real-time Socket.IO messaging. Engineered performant video loading pipelines. Published live on the iOS App Store.",
       tech: ["React Native Expo", "Node.js", "Socket.IO", "MongoDB", "Video Rendering"],
@@ -66,7 +72,22 @@ export default function Projects() {
       gitLink: "https://github.com/abu-saied-mondal",
       color: "#7000ff",
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    async function loadProjects() {
+      try {
+        const res = await fetch("/api/projects");
+        const data = await res.json();
+        if (data.success && data.projects) {
+          setProjects(data.projects);
+        }
+      } catch (err) {
+        console.error("Failed to load projects dynamic content:", err);
+      }
+    }
+    loadProjects();
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -161,7 +182,7 @@ export default function Projects() {
       st.kill();
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [projects]);
 
   return (
     <>

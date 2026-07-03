@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Award, Briefcase, Heart, Smile } from "lucide-react";
@@ -8,6 +8,57 @@ export default function About() {
   const sectionRef = useRef(null);
   const innerRef = useRef(null);
   const cardsRef = useRef(null);
+
+  const [aboutData, setAboutData] = useState({
+    title: 'I craft clean code & <span class="text-gradient-cyan-purple">high-end solutions</span>',
+    description1: "As a self-motivated Fullstack Developer and Mobile Engineer, I specialize in building scalable web applications and high-performing mobile apps. With a Bachelor of Technology in Electronics and Communication Engineering, I bring strong logical thinking, object-oriented design, and architectural planning to every codebase.",
+    description2: "My background spans Java, the MERN stack, Laravel, and React Native. From building complete subscription-based icon marketplaces like IconsGeek to developing video-chat matchmaking applications, I focus on clean, maintainable code and taking complete ownership of product life cycles.",
+    stats: [
+      {
+        icon: "Briefcase",
+        value: "4+ Years",
+        label: "Development Experience",
+        desc: "Creating backend APIs, mobile apps, and frontend interfaces.",
+        accent: "#00f2fe",
+      },
+      {
+        icon: "Award",
+        value: "20+",
+        label: "Projects Completed",
+        desc: "From complex SaaS products to real-time mobile platforms.",
+        accent: "#7000ff",
+      },
+      {
+        icon: "Smile",
+        value: "B.Tech",
+        label: "ECE Graduate",
+        desc: "Graduated with 89% marks in Electronics & Communication Engineering.",
+        accent: "#ff7b00",
+      },
+      {
+        icon: "Heart",
+        value: "100%",
+        label: "Product Ownership",
+        desc: "Committed to writing clean, maintainable code from database to UI.",
+        accent: "#ff007b",
+      },
+    ]
+  });
+
+  useEffect(() => {
+    async function loadContent() {
+      try {
+        const res = await fetch("/api/content");
+        const data = await res.json();
+        if (data.success && data.about) {
+          setAboutData(data.about);
+        }
+      } catch (err) {
+        console.error("Failed to load about content:", err);
+      }
+    }
+    loadContent();
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -66,38 +117,19 @@ export default function About() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [aboutData]); // Re-trigger when data changes
 
-  const stats = [
-    {
-      icon: <Briefcase className="w-6 h-6 text-[#00f2fe]" />,
-      value: "4+ Years",
-      label: "Development Experience",
-      desc: "Creating backend APIs, mobile apps, and frontend interfaces.",
-      accent: "#00f2fe",
-    },
-    {
-      icon: <Award className="w-6 h-6 text-[#7000ff]" />,
-      value: "20+",
-      label: "Projects Completed",
-      desc: "From complex SaaS products to real-time mobile platforms.",
-      accent: "#7000ff",
-    },
-    {
-      icon: <Smile className="w-6 h-6 text-[#ff7b00]" />,
-      value: "B.Tech",
-      label: "ECE Graduate",
-      desc: "Graduated with 89% marks in Electronics & Communication Engineering.",
-      accent: "#ff7b00",
-    },
-    {
-      icon: <Heart className="w-6 h-6 text-[#ff007b]" />,
-      value: "100%",
-      label: "Product Ownership",
-      desc: "Committed to writing clean, maintainable code from database to UI.",
-      accent: "#ff007b",
-    },
-  ];
+  const renderIcon = (iconName, accent) => {
+    const IconComponent = {
+      Briefcase,
+      Award,
+      Smile,
+      Heart
+    }[iconName];
+
+    if (!IconComponent) return null;
+    return <IconComponent className="w-6 h-6" style={{ color: accent }} />;
+  };
 
   return (
     <section
@@ -117,21 +149,15 @@ export default function About() {
               <span className="w-6 h-[2px] bg-[#00f2fe] inline-block" />
               About Me
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-7 leading-tight">
-              I craft clean code &{" "}
-              <span className="text-gradient-cyan-purple">high-end solutions</span>
-            </h2>
+            <h2 
+              className="text-3xl md:text-5xl font-bold text-white mb-7 leading-tight"
+              dangerouslySetInnerHTML={{ __html: aboutData.title }}
+            />
             <p className="text-slate-400 font-light leading-relaxed mb-5 text-[15px]">
-              As a self-motivated Fullstack Developer and Mobile Engineer, I specialize in building
-              scalable web applications and high-performing mobile apps. With a Bachelor of Technology
-              in Electronics and Communication Engineering, I bring strong logical thinking,
-              object-oriented design, and architectural planning to every codebase.
+              {aboutData.description1}
             </p>
             <p className="text-slate-500 font-light leading-relaxed text-[14px]">
-              My background spans Java, the MERN stack, Laravel, and React Native. From building
-              complete subscription-based icon marketplaces like IconsGeek to developing
-              video-chat matchmaking applications, I focus on clean, maintainable code and taking
-              complete ownership of product life cycles.
+              {aboutData.description2}
             </p>
 
             {/* Accent line */}
@@ -143,7 +169,7 @@ export default function About() {
             ref={cardsRef}
             className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5"
           >
-            {stats.map((stat, idx) => (
+            {aboutData.stats && aboutData.stats.map((stat, idx) => (
               <div
                 key={idx}
                 className="stat-card relative p-8 flex flex-col gap-4 text-left rounded-2xl overflow-hidden group cursor-default"
@@ -177,7 +203,7 @@ export default function About() {
                     borderColor: `${stat.accent}25`,
                   }}
                 >
-                  {stat.icon}
+                  {renderIcon(stat.icon, stat.accent)}
                 </div>
                 <div>
                   <div

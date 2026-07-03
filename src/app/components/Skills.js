@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Cpu, Database, Layout, Settings } from "lucide-react";
@@ -8,6 +8,68 @@ export default function Skills() {
   const sectionRef = useRef(null);
   const headerRef = useRef(null);
   const gridRef = useRef(null);
+
+  const [skillsData, setSkillsData] = useState([
+    {
+      title: "Frontend & Mobile Engineering",
+      icon: "Layout",
+      accent: "#00f2fe",
+      skills: [
+        { name: "HTML / CSS / JavaScript", level: "95%" },
+        { name: "React / Next.js", level: "90%" },
+        { name: "React Native / Expo", level: "85%" },
+        { name: "GSAP / Tailwind CSS", level: "90%" },
+      ],
+    },
+    {
+      title: "Backend Development",
+      icon: "Cpu",
+      accent: "#7000ff",
+      skills: [
+        { name: "Java (Core & Advanced)", level: "85%" },
+        { name: "PHP / Laravel MVC", level: "80%" },
+        { name: "Node.js / Express", level: "85%" },
+        { name: "REST APIs & Postman", level: "90%" },
+      ],
+    },
+    {
+      title: "Databases & CMS",
+      icon: "Database",
+      accent: "#ff7b00",
+      skills: [
+        { name: "MySQL / PostgreSQL", level: "85%" },
+        { name: "MongoDB", level: "80%" },
+        { name: "Strapi (Headless CMS)", level: "75%" },
+        { name: "JSON & Promises", level: "90%" },
+      ],
+    },
+    {
+      title: "Tools & Logical Concepts",
+      icon: "Settings",
+      accent: "#ff007b",
+      skills: [
+        { name: "Git & Version Control", level: "85%" },
+        { name: "Logical Programming & DSA", level: "80%" },
+        { name: "Database Management (DBMS)", level: "80%" },
+        { name: "Performance Optimization", level: "85%" },
+      ],
+    },
+  ]);
+
+  useEffect(() => {
+    async function loadContent() {
+      try {
+        const res = await fetch("/api/content");
+        const data = await res.json();
+        if (data.success && data.skills) {
+          setSkillsData(data.skills);
+        }
+      } catch (err) {
+        console.error("Failed to load skills content:", err);
+      }
+    }
+    loadContent();
+  }, []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -84,54 +146,19 @@ export default function Skills() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [skillsData]); // Re-trigger animations when data changes
 
-  const skillsData = [
-    {
-      title: "Frontend & Mobile Engineering",
-      icon: <Layout className="w-5 h-5 text-[#00f2fe]" />,
-      accent: "#00f2fe",
-      skills: [
-        { name: "HTML / CSS / JavaScript", level: "95%" },
-        { name: "React / Next.js", level: "90%" },
-        { name: "React Native / Expo", level: "85%" },
-        { name: "GSAP / Tailwind CSS", level: "90%" },
-      ],
-    },
-    {
-      title: "Backend Development",
-      icon: <Cpu className="w-5 h-5 text-[#7000ff]" />,
-      accent: "#7000ff",
-      skills: [
-        { name: "Java (Core & Advanced)", level: "85%" },
-        { name: "PHP / Laravel MVC", level: "80%" },
-        { name: "Node.js / Express", level: "85%" },
-        { name: "REST APIs & Postman", level: "90%" },
-      ],
-    },
-    {
-      title: "Databases & CMS",
-      icon: <Database className="w-5 h-5 text-[#ff7b00]" />,
-      accent: "#ff7b00",
-      skills: [
-        { name: "MySQL / PostgreSQL", level: "85%" },
-        { name: "MongoDB", level: "80%" },
-        { name: "Strapi (Headless CMS)", level: "75%" },
-        { name: "JSON & Promises", level: "90%" },
-      ],
-    },
-    {
-      title: "Tools & Logical Concepts",
-      icon: <Settings className="w-5 h-5 text-[#ff007b]" />,
-      accent: "#ff007b",
-      skills: [
-        { name: "Git & Version Control", level: "85%" },
-        { name: "Logical Programming & DSA", level: "80%" },
-        { name: "Database Management (DBMS)", level: "80%" },
-        { name: "Performance Optimization", level: "85%" },
-      ],
-    },
-  ];
+  const renderIcon = (iconName, accent) => {
+    const IconComponent = {
+      Layout,
+      Cpu,
+      Database,
+      Settings
+    }[iconName];
+
+    if (!IconComponent) return null;
+    return <IconComponent className="w-5 h-5" style={{ color: accent }} />;
+  };
 
   return (
     <section
@@ -199,7 +226,7 @@ export default function Skills() {
                     borderColor: `${category.accent}25`,
                   }}
                 >
-                  {category.icon}
+                  {renderIcon(category.icon, category.accent)}
                 </div>
                 <h3 className="text-[15px] font-bold text-white">{category.title}</h3>
               </div>
