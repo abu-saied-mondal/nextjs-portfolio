@@ -6,9 +6,8 @@ import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
 export default function Projects() {
-  const wrapperRef = useRef(null);   // tall scroll-distance container
-  const sectionRef = useRef(null);   // sticky viewport panel
-  const trackRef = useRef(null);     // horizontal sliding rail
+  const wrapperRef = useRef(null);   // Tall scroll container
+  const sectionRef = useRef(null);   // Sticky view viewport
   const progressRef = useRef(null);
   const counterRef = useRef(null);
 
@@ -33,7 +32,7 @@ export default function Projects() {
     },
     {
       title: "HerCompass — AI Health Companion",
-      desc: "Personalized AI-powered health companion for women 45+. Tracks mood, symptoms, sleep, and energy — transforms raw daily logs into predictive, actionable wellness insights using intelligent AI pattern analysis.",
+      desc: "Personalized AI-powered health companion for women 45+. Tracks mood, symptoms, sleep, and energy — transforms daily logs into predictive, actionable wellness insights using intelligent AI pattern analysis.",
       tech: ["MERN Stack", "Node.js", "MongoDB", "AI Processing", "Predictive Analytics"],
       image: "/hercompass.jpg",
       demoLink: "https://newhercompass.vercel.app/",
@@ -42,7 +41,7 @@ export default function Projects() {
     },
     {
       title: "IconsGeek",
-      desc: "Subscription-based icon marketplace with dynamic SVG rendering, real-time colour/size customisation, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed.",
+      desc: "Subscription-based icon marketplace with dynamic SVG rendering, real-time color/size customization, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed.",
       tech: ["Next.js", "Laravel", "MySQL", "Stripe API", "REST APIs"],
       image: "/dashboard_mockup.png",
       demoLink: "https://www.iconsgeek.com/",
@@ -72,342 +71,280 @@ export default function Projects() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const section = sectionRef.current;
-    const track = trackRef.current;
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
+
     const wrapper = wrapperRef.current;
-    if (!section || !track || !wrapper) return;
+    const section = sectionRef.current;
+    const cards = section.querySelectorAll(".proj-card-3d");
+    if (!wrapper || !section || !cards.length) return;
 
-    // Calculate how far the track needs to scroll horizontally
-    const getScrollAmount = () => track.scrollWidth - section.offsetWidth;
+    // Define Z-spacing depth between cards in the hallway
+    const cardSpacing = 750;
+    const totalDepth = cards.length * cardSpacing;
+    const scrollDistance = totalDepth + 600; // Additional space to fly the last card past viewport
 
-    // Set wrapper height = scrollAmount + 1 viewport so we have enough scroll room
-    const setWrapperHeight = () => {
-      wrapper.style.height = `${getScrollAmount() + window.innerHeight}px`;
-    };
-    setWrapperHeight();
+    // Set height dynamically
+    wrapper.style.height = `${scrollDistance + window.innerHeight}px`;
 
-    // Main horizontal scroll animation — scrubbed to wrapper scroll progress
+    const camera = { z: 0 };
+
     const st = ScrollTrigger.create({
       trigger: wrapper,
       start: "top top",
-      end: () => `+=${getScrollAmount()}`,
-      scrub: 1.5,
-      invalidateOnRefresh: true,
+      end: "bottom bottom",
+      scrub: 1.0,
       onUpdate: (self) => {
-        // Drive the horizontal translation directly
-        gsap.set(track, { x: -getScrollAmount() * self.progress });
+        const currentCameraZ = self.progress * scrollDistance;
+        
+        cards.forEach((card, i) => {
+          const isEven = i % 2 === 0;
+          const initialZ = -i * cardSpacing;
+          const currentZ = initialZ + currentCameraZ;
 
-        // 3D card tilt based on each card's position relative to viewport centre
-        const cards = track.querySelectorAll(".proj-card");
-        const centre = window.innerWidth / 2;
-        cards.forEach((card) => {
-          const rect = card.getBoundingClientRect();
-          const cardCentre = rect.left + rect.width / 2;
-          const dist = (cardCentre - centre) / window.innerWidth; // –1 … +1
-          const rotY = dist * 18; // degrees
-          const scale = 1 - Math.abs(dist) * 0.06;
+          // Base positions
+          let x = isEven ? -280 : 280;
+          let rotateY = isEven ? 20 : -20;
+          let opacity = 1;
+
+          if (currentZ > 150) {
+            // Card is getting extremely close and flying past camera
+            const fadeFactor = Math.min((currentZ - 150) / 450, 1);
+            x += isEven ? -fadeFactor * 420 : fadeFactor * 420;
+            rotateY += isEven ? -fadeFactor * 35 : fadeFactor * 35;
+            opacity = 1 - fadeFactor;
+          } else if (currentZ < -1500) {
+            // Fog fade for cards deep in the background
+            const fadeFactor = Math.min((currentZ + 1500) / -600, 1);
+            opacity = 1 - fadeFactor;
+          }
+
+          // Apply styles via GSAP
           gsap.set(card, {
-            rotateY: rotY,
-            scale,
-            transformOrigin: "center center",
-            force3D: true,
+            z: currentZ,
+            x: x,
+            rotateY: rotateY,
+            opacity: opacity,
+            pointerEvents: (currentZ > 120 || currentZ < -800) ? "none" : "auto",
+            visibility: opacity <= 0 ? "hidden" : "visible",
           });
         });
 
-        // Update UI
-        if (progressRef.current)
+        // Update progress bar
+        if (progressRef.current) {
           progressRef.current.style.width = `${self.progress * 100}%`;
+        }
+
+        // Update active index counter
         if (counterRef.current) {
-          const cards2 = track.querySelectorAll(".proj-card");
           const idx = Math.min(
-            Math.round(self.progress * (cards2.length - 1)),
-            cards2.length - 1
+            Math.round(self.progress * (cards.length - 1)),
+            cards.length - 1
           );
           counterRef.current.textContent = `0${idx + 1}`;
         }
-      },
+      }
     });
 
-    // Resize handler
-    const onResize = () => {
-      setWrapperHeight();
+    const handleResize = () => {
+      wrapper.style.height = `${scrollDistance + window.innerHeight}px`;
       ScrollTrigger.refresh();
     };
-    window.addEventListener("resize", onResize);
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
       st.kill();
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
     <>
-      {/* ── Tall wrapper — creates vertical scroll distance ─────────── */}
-      <div ref={wrapperRef} id="projects" style={{ position: "relative" }}>
-
-        {/* ── Sticky viewport panel — stays fixed while wrapper scrolls ─ */}
+      {/* ── Desktop View (3D Hallway Walkthrough) ───────────────────── */}
+      <div className="hidden md:block" ref={wrapperRef} style={{ position: "relative" }}>
+        
+        {/* Sticky viewport panel */}
         <div
           ref={sectionRef}
-          style={{
-            position: "sticky",
-            top: 0,
-            height: "100vh",
-            overflow: "hidden",
-            background: "#03030f",
-            borderTop: "1px solid rgba(255,255,255,0.05)",
-          }}
+          className="sticky top-0 w-full overflow-hidden bg-[#03030f]"
+          style={{ height: "100vh" }}
         >
-          {/* Ambient bg glow */}
+          {/* Neon Grid Floor */}
           <div
+            className="absolute pointer-events-none"
             style={{
-              position: "absolute",
-              inset: 0,
-              pointerEvents: "none",
-              background:
-                "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(112,0,255,0.07) 0%, transparent 70%)",
+              width: "200vw",
+              height: "200vh",
+              top: "35%",
+              left: "-50%",
+              background: `
+                linear-gradient(to top, rgba(3,3,15,1) 15%, transparent 60%),
+                repeating-linear-gradient(90deg, rgba(0,242,254,0.05) 0px, rgba(0,242,254,0.05) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(0,242,254,0.05) 0px, rgba(0,242,254,0.05) 1px, transparent 1px, transparent 40px)
+              `,
+              transform: "rotateX(82deg) translateY(-15%)",
+              transformOrigin: "center top",
+              transformStyle: "preserve-3d",
+              opacity: 0.9,
             }}
           />
 
-          {/* ── Header bar ──────────────────────────────────────────── */}
+          {/* Neon Grid Ceiling */}
           <div
+            className="absolute pointer-events-none"
             style={{
-              position: "relative",
+              width: "200vw",
+              height: "200vh",
+              bottom: "65%",
+              left: "-50%",
+              background: `
+                linear-gradient(to bottom, rgba(3,3,15,1) 15%, transparent 60%),
+                repeating-linear-gradient(90deg, rgba(112,0,255,0.03) 0px, rgba(112,0,255,0.03) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(112,0,255,0.03) 0px, rgba(112,0,255,0.03) 1px, transparent 1px, transparent 40px)
+              `,
+              transform: "rotateX(-82deg) translateY(15%)",
+              transformOrigin: "center bottom",
+              transformStyle: "preserve-3d",
+              opacity: 0.9,
+            }}
+          />
+
+          {/* Ambient bg gradient glow */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, transparent 20%, rgba(3,3,15,0.95) 100%)",
+              zIndex: 3,
+            }}
+          />
+
+          {/* Header Panel */}
+          <div
+            className="relative flex items-end justify-between border-b border-white/5 bg-transparent"
+            style={{
               zIndex: 10,
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              padding: "2rem 4rem 1rem",
-              borderBottom: "1px solid rgba(255,255,255,0.05)",
+              padding: "2rem 4rem 1.25rem",
             }}
           >
             <div>
-              <span
-                style={{
-                  display: "block",
-                  fontSize: "0.65rem",
-                  fontWeight: 700,
-                  letterSpacing: "0.2em",
-                  color: "#00f2fe",
-                  textTransform: "uppercase",
-                  marginBottom: "0.4rem",
-                }}
-              >
+              <span className="text-xs font-bold tracking-widest text-[#00f2fe] uppercase mb-2 block">
                 Portfolio Case Studies
               </span>
-              <h2
-                style={{
-                  fontSize: "clamp(1.8rem, 4vw, 3rem)",
-                  fontWeight: 800,
-                  color: "#fff",
-                  margin: 0,
-                  lineHeight: 1.1,
-                }}
-              >
+              <h2 className="text-3xl lg:text-5xl font-extrabold text-white leading-tight m-0">
                 Featured Projects
               </h2>
             </div>
 
-            {/* Scroll hint */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                color: "rgba(255,255,255,0.3)",
-                fontSize: "0.65rem",
-                fontFamily: "monospace",
-                letterSpacing: "0.15em",
-                textTransform: "uppercase",
-              }}
-            >
-              <ArrowRight size={14} style={{ color: "#00f2fe" }} />
+            {/* Scroll Hint */}
+            <div className="flex items-center gap-2 text-slate-500 text-xs font-mono tracking-widest uppercase">
+              <ArrowRight className="w-4 h-4 animate-pulse text-[#00f2fe]" />
               Scroll to explore
             </div>
 
             {/* Counter */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem" }}>
+            <div className="flex items-baseline gap-1">
               <span
                 ref={counterRef}
-                style={{
-                  fontSize: "2.5rem",
-                  fontWeight: 900,
-                  color: "#00f2fe",
-                  fontVariantNumeric: "tabular-nums",
-                  lineHeight: 1,
-                }}
+                className="text-4xl font-extrabold text-[#00f2fe] tabular-nums"
               >
                 01
               </span>
-              <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "1.1rem", fontFamily: "monospace" }}>
+              <span className="text-slate-600 font-mono text-lg">
                 / 0{projects.length}
               </span>
             </div>
           </div>
 
-          {/* ── Progress bar ─────────────────────────────────────────── */}
-          <div style={{ height: "2px", background: "rgba(255,255,255,0.05)", margin: "0 4rem" }}>
+          {/* Progress Bar */}
+          <div className="relative h-[2px] bg-white/5 mx-[4rem]" style={{ zIndex: 10 }}>
             <div
               ref={progressRef}
-              style={{
-                height: "100%",
-                width: "0%",
-                background: "linear-gradient(90deg, #00f2fe, #7000ff, #ff007b)",
-                transition: "none",
-              }}
+              className="h-full bg-gradient-to-r from-[#00f2fe] via-[#7000ff] to-[#ff007b] transition-none"
+              style={{ width: "0%" }}
             />
           </div>
 
-          {/* ── Horizontal track ─────────────────────────────────────── */}
+          {/* 3D Viewport Area */}
           <div
+            className="relative flex items-center justify-center overflow-hidden"
             style={{
-              display: "flex",
-              alignItems: "center",
               height: "calc(100vh - 110px)",
-              perspective: "1400px",
-              perspectiveOrigin: "center center",
+              perspective: "1100px",
+              perspectiveOrigin: "50% 35%",
+              transformStyle: "preserve-3d",
             }}
           >
             <div
-              ref={trackRef}
+              className="relative w-full h-full"
               style={{
-                display: "flex",
-                gap: "2rem",
-                paddingLeft: "4rem",
-                paddingRight: "4rem",
-                willChange: "transform",
                 transformStyle: "preserve-3d",
               }}
             >
               {projects.map((project, idx) => (
                 <div
                   key={idx}
-                  className="proj-card"
+                  className="proj-card-3d absolute flex flex-col overflow-hidden shadow-2xl"
                   style={{
-                    flexShrink: 0,
-                    width: "clamp(300px, 35vw, 500px)",
-                    height: "calc(100vh - 180px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    borderRadius: "1.25rem",
-                    overflow: "hidden",
+                    width: "360px",
+                    height: "490px",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate3d(-50%, -50%, -2000px) rotateY(20deg)",
                     background: "rgba(9,9,21,0.85)",
-                    border: `1px solid ${project.color}20`,
+                    border: `1px solid ${project.color}30`,
+                    borderRadius: "1.5rem",
                     backdropFilter: "blur(20px)",
-                    willChange: "transform",
                     transformStyle: "preserve-3d",
-                    transition: "box-shadow 0.3s ease",
+                    willChange: "transform, opacity",
+                    transition: "box-shadow 0.4s ease, border-color 0.4s ease",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = `0 30px 80px -20px ${project.color}40, 0 0 0 1px ${project.color}30`;
+                    e.currentTarget.style.borderColor = `${project.color}60`;
+                    e.currentTarget.style.boxShadow = `0 30px 80px -15px ${project.color}50`;
                   }}
                   onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = `${project.color}30`;
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
-                  {/* Image area */}
-                  <div style={{ position: "relative", height: "42%", flexShrink: 0, overflow: "hidden" }}>
+                  {/* Image Container */}
+                  <div className="relative h-[42%] w-full overflow-hidden flex-shrink-0">
                     <Image
                       src={project.image}
                       alt={project.title}
                       fill
-                      sizes="500px"
-                      style={{ objectFit: "cover" }}
+                      sizes="360px"
+                      className="object-cover"
                       priority={idx < 2}
                     />
-                    {/* Gradient scrim */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(to bottom, transparent 40%, rgba(9,9,21,0.98) 100%)",
-                      }}
-                    />
-                    {/* Index chip */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: "1rem",
-                        left: "1rem",
-                        padding: "0.25rem 0.75rem",
-                        borderRadius: "999px",
-                        background: "rgba(0,0,0,0.5)",
-                        backdropFilter: "blur(8px)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        fontSize: "0.65rem",
-                        fontFamily: "monospace",
-                        color: "rgba(255,255,255,0.5)",
-                        letterSpacing: "0.1em",
-                      }}
-                    >
+                    {/* Shadow overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#090915] to-transparent pointer-events-none" />
+                    {/* Badge count */}
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-mono text-slate-400">
                       {String(idx + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
                     </div>
-                    {/* Accent glow dot */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: "1rem",
-                        right: "1rem",
-                        width: "10px",
-                        height: "10px",
-                        borderRadius: "50%",
-                        backgroundColor: project.color,
-                        boxShadow: `0 0 16px ${project.color}`,
-                      }}
-                    />
                   </div>
 
-                  {/* Content */}
-                  <div
-                    style={{
-                      flex: 1,
-                      padding: "1.5rem 1.75rem",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.875rem",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontSize: "1.15rem",
-                        fontWeight: 700,
-                        color: "#fff",
-                        margin: 0,
-                        lineHeight: 1.3,
-                      }}
-                    >
+                  {/* Card Info */}
+                  <div className="p-6 flex flex-col flex-1 gap-3 overflow-hidden">
+                    <h3 className="text-lg font-bold text-white leading-snug">
                       {project.title}
                     </h3>
-                    <p
-                      style={{
-                        fontSize: "0.8rem",
-                        color: "rgba(148,163,184,0.9)",
-                        lineHeight: 1.65,
-                        margin: 0,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 4,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
+                    <p className="text-xs text-slate-400 leading-relaxed font-light line-clamp-4">
                       {project.desc}
                     </p>
 
-                    {/* Tech badges */}
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem", marginTop: "auto" }}>
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1.5 mt-auto">
                       {project.tech.map((tag) => (
                         <span
                           key={tag}
+                          className="px-2 py-0.5 rounded text-[9px] font-bold tracking-wider"
                           style={{
-                            padding: "0.2rem 0.6rem",
-                            borderRadius: "0.375rem",
-                            fontSize: "0.6rem",
-                            fontWeight: 700,
-                            letterSpacing: "0.08em",
                             color: project.color,
-                            background: `${project.color}14`,
-                            border: `1px solid ${project.color}28`,
+                            background: `${project.color}15`,
+                            border: `1px solid ${project.color}25`,
                           }}
                         >
                           {tag}
@@ -415,75 +352,128 @@ export default function Projects() {
                       ))}
                     </div>
 
-                    {/* CTA row */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                        paddingTop: "0.75rem",
-                        borderTop: "1px solid rgba(255,255,255,0.06)",
-                      }}
-                    >
+                    {/* Buttons */}
+                    <div className="flex items-center gap-4 pt-3 mt-1 border-t border-white/5">
                       <a
                         href={project.demoLink}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest text-black no-underline transition-all duration-300"
                         style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.375rem",
-                          padding: "0.45rem 1.1rem",
-                          borderRadius: "999px",
-                          fontSize: "0.65rem",
-                          fontWeight: 700,
-                          letterSpacing: "0.1em",
-                          textTransform: "uppercase",
-                          color: "#000",
                           backgroundColor: project.color,
-                          boxShadow: `0 4px 20px ${project.color}50`,
-                          textDecoration: "none",
-                          transition: "transform 0.2s, box-shadow 0.2s",
+                          boxShadow: `0 4px 14px ${project.color}40`,
                         }}
-                        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-                        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                       >
-                        Live Demo <ExternalLink size={11} />
+                        Demo <ExternalLink className="w-3 h-3" />
                       </a>
                       <a
                         href={project.gitLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        style={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: "0.375rem",
-                          fontSize: "0.65rem",
-                          fontWeight: 700,
-                          letterSpacing: "0.1em",
-                          textTransform: "uppercase",
-                          color: "rgba(148,163,184,0.7)",
-                          textDecoration: "none",
-                          transition: "color 0.2s",
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(148,163,184,0.7)")}
+                        className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-white no-underline transition-colors duration-300"
                       >
-                        <Github size={14} /> GitHub
+                        <Github className="w-3.5 h-3.5" /> GitHub
                       </a>
                     </div>
                   </div>
                 </div>
               ))}
-
-              {/* End spacer */}
-              <div style={{ flexShrink: 0, width: "4rem" }} />
             </div>
           </div>
         </div>
-        {/* End sticky section */}
       </div>
-      {/* End tall wrapper */}
+
+      {/* ── Mobile View (Vertical Grid) ────────────────────────────── */}
+      <div className="block md:hidden py-20 px-6 bg-[#03030f] border-t border-white/5">
+        <div className="text-center mb-12">
+          <span className="text-xs font-bold tracking-widest text-[#00f2fe] uppercase mb-2 block">
+            Portfolio Case Studies
+          </span>
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Featured Projects
+          </h2>
+          <p className="text-xs text-slate-400 font-light max-w-sm mx-auto leading-relaxed">
+            A selection of recent full-stack applications showcasing complex data structures, integrations, and clean interface designs.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-8">
+          {projects.map((project, idx) => (
+            <div
+              key={idx}
+              className="glow-card overflow-hidden flex flex-col h-full group"
+              style={{
+                borderColor: `${project.color}20`,
+                background: "rgba(9, 9, 21, 0.7)",
+              }}
+            >
+              {/* Image */}
+              <div className="relative h-48 w-full overflow-hidden bg-slate-900 border-b border-white/5">
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  sizes="100vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#03030f]/60 to-transparent pointer-events-none" />
+              </div>
+
+              {/* Content */}
+              <div className="p-6 flex flex-col justify-between flex-grow gap-5">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-base font-bold text-white">
+                    {project.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 font-light leading-relaxed">
+                    {project.desc}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-4 mt-auto">
+                  {/* Badges */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {project.tech.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-0.5 rounded text-[8px] font-bold tracking-wider"
+                        style={{
+                          color: project.color,
+                          background: `${project.color}15`,
+                          border: `1px solid ${project.color}25`,
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Links */}
+                  <div className="flex items-center gap-4 pt-2 border-t border-white/5">
+                    <a
+                      href={project.demoLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider no-underline uppercase"
+                      style={{ color: project.color }}
+                    >
+                      LIVE DEMO <ExternalLink className="w-3 h-3" />
+                    </a>
+                    <a
+                      href={project.gitLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-slate-400 hover:text-white no-underline uppercase"
+                    >
+                      GITHUB <Github className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </>
   );
 }
