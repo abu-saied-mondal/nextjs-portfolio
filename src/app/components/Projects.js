@@ -6,14 +6,15 @@ import { ExternalLink, Github, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
 export default function Projects() {
-  const sectionRef = useRef(null);
-  const trackRef = useRef(null);
+  const wrapperRef = useRef(null);   // tall scroll-distance container
+  const sectionRef = useRef(null);   // sticky viewport panel
+  const trackRef = useRef(null);     // horizontal sliding rail
   const progressRef = useRef(null);
   const counterRef = useRef(null);
 
   const projects = [
     {
-      title: "ZTS India - Dynamic Corporate Portal",
+      title: "ZTS India — Dynamic Corporate Portal",
       desc: "A fully dynamic corporate website built from scratch for a major Kolkata company. Features a custom WordPress-like CMS in Laravel — admins control pages, blogs, media, navigation, and SEO metadata entirely from a dashboard.",
       tech: ["Laravel", "PHP", "MySQL", "Custom CMS", "SEO Management"],
       image: "/zts_mockup.png",
@@ -23,7 +24,7 @@ export default function Projects() {
     },
     {
       title: "Enterprise HRM Ecosystem",
-      desc: "All-in-one Human Resource Management System: HR Core, AI Resume Screening, Biometric/GPS Attendance, Leave Management, Payroll with Bank Transfer, LMS Training Portal, and Advanced Analytics — 25+ integrated modules.",
+      desc: "All-in-one HRM System with 25+ modules: HR Core, AI Resume Screening, Biometric/GPS Attendance, Leave Management, Payroll with Bank Transfer, LMS Training Portal, and Advanced Analytics.",
       tech: ["Laravel", "MySQL", "PostgreSQL", "AI Features", "Real-time Analytics"],
       image: "/hrm_system.jpg",
       demoLink: "https://ascinate.in/demo/hrm_system",
@@ -32,7 +33,7 @@ export default function Projects() {
     },
     {
       title: "HerCompass — AI Health Companion",
-      desc: "A personalized AI-powered health companion for women 45+. Tracks mood, symptoms, sleep, and energy — then transforms raw daily logs into predictive, actionable wellness insights using intelligent AI pattern analysis.",
+      desc: "Personalized AI-powered health companion for women 45+. Tracks mood, symptoms, sleep, and energy — transforms raw daily logs into predictive, actionable wellness insights using intelligent AI pattern analysis.",
       tech: ["MERN Stack", "Node.js", "MongoDB", "AI Processing", "Predictive Analytics"],
       image: "/hercompass.jpg",
       demoLink: "https://newhercompass.vercel.app/",
@@ -41,7 +42,7 @@ export default function Projects() {
     },
     {
       title: "IconsGeek",
-      desc: "A subscription-based icon marketplace with dynamic SVG rendering, real-time colour/size customisation, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed at scale.",
+      desc: "Subscription-based icon marketplace with dynamic SVG rendering, real-time colour/size customisation, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed.",
       tech: ["Next.js", "Laravel", "MySQL", "Stripe API", "REST APIs"],
       image: "/dashboard_mockup.png",
       demoLink: "https://www.iconsgeek.com/",
@@ -59,7 +60,7 @@ export default function Projects() {
     },
     {
       title: "Louis — Video Dating App",
-      desc: "Tinder-style matchmaking platform with vertical video profiles, swipe gesture UX, and real-time Socket.IO messaging. Engineered performant video loading pipelines. Published live on the iOS App Store.",
+      desc: "Tinder-style matchmaking with vertical video profiles, swipe gesture UX, and real-time Socket.IO messaging. Engineered performant video loading pipelines. Published live on the iOS App Store.",
       tech: ["React Native Expo", "Node.js", "Socket.IO", "MongoDB", "Video Rendering"],
       image: "/ecommerce_mockup.png",
       demoLink: "https://apps.apple.com/in/app/louis-dating/id6472041327",
@@ -71,258 +72,418 @@ export default function Projects() {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
+    const section = sectionRef.current;
+    const track = trackRef.current;
+    const wrapper = wrapperRef.current;
+    if (!section || !track || !wrapper) return;
 
-    const cards = trackRef.current.querySelectorAll(".proj-card");
-    const totalCards = cards.length;
-    const cardWidth = 520;
-    const gap = 32;
-    const totalTrackWidth = totalCards * (cardWidth + gap);
-    const viewportWidth = window.innerWidth;
-    const scrollDistance = totalTrackWidth - viewportWidth + 200;
+    // Calculate how far the track needs to scroll horizontally
+    const getScrollAmount = () => track.scrollWidth - section.offsetWidth;
 
-    const ctx = gsap.context(() => {
-      // Pin the section and drive horizontal scrolling from vertical scroll
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: () => `+=${scrollDistance}`,
-          pin: true,
-          scrub: 1.2,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            // Update progress bar
-            if (progressRef.current) {
-              progressRef.current.style.width = `${self.progress * 100}%`;
-            }
-            // Update counter
-            if (counterRef.current) {
-              const activeIdx = Math.min(
-                Math.round(self.progress * (totalCards - 1)),
-                totalCards - 1
-              );
-              counterRef.current.textContent = `0${activeIdx + 1}`;
-            }
-          },
-        },
-      });
+    // Set wrapper height = scrollAmount + 1 viewport so we have enough scroll room
+    const setWrapperHeight = () => {
+      wrapper.style.height = `${getScrollAmount() + window.innerHeight}px`;
+    };
+    setWrapperHeight();
 
-      tl.to(trackRef.current, {
-        x: -scrollDistance,
-        ease: "none",
-      });
+    // Main horizontal scroll animation — scrubbed to wrapper scroll progress
+    const st = ScrollTrigger.create({
+      trigger: wrapper,
+      start: "top top",
+      end: () => `+=${getScrollAmount()}`,
+      scrub: 1.5,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // Drive the horizontal translation directly
+        gsap.set(track, { x: -getScrollAmount() * self.progress });
 
-      // 3D card entrance animation — each card rotates in as it enters viewport
-      cards.forEach((card, i) => {
-        gsap.fromTo(
-          card,
-          { rotateY: 22, opacity: 0.3, scale: 0.92 },
-          {
-            rotateY: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: () =>
-                `top+=${(scrollDistance / totalCards) * i * 0.8} top`,
-              end: () =>
-                `top+=${(scrollDistance / totalCards) * (i + 0.7) * 0.8} top`,
-              scrub: 0.8,
-              containerAnimation: tl,
-            },
-          }
-        );
-      });
-    }, sectionRef);
+        // 3D card tilt based on each card's position relative to viewport centre
+        const cards = track.querySelectorAll(".proj-card");
+        const centre = window.innerWidth / 2;
+        cards.forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          const cardCentre = rect.left + rect.width / 2;
+          const dist = (cardCentre - centre) / window.innerWidth; // –1 … +1
+          const rotY = dist * 18; // degrees
+          const scale = 1 - Math.abs(dist) * 0.06;
+          gsap.set(card, {
+            rotateY: rotY,
+            scale,
+            transformOrigin: "center center",
+            force3D: true,
+          });
+        });
 
-    return () => ctx.revert();
+        // Update UI
+        if (progressRef.current)
+          progressRef.current.style.width = `${self.progress * 100}%`;
+        if (counterRef.current) {
+          const cards2 = track.querySelectorAll(".proj-card");
+          const idx = Math.min(
+            Math.round(self.progress * (cards2.length - 1)),
+            cards2.length - 1
+          );
+          counterRef.current.textContent = `0${idx + 1}`;
+        }
+      },
+    });
+
+    // Resize handler
+    const onResize = () => {
+      setWrapperHeight();
+      ScrollTrigger.refresh();
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      st.kill();
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="projects-section relative w-full overflow-hidden bg-[#03030f]"
-      style={{ height: "100svh" }}
-    >
-      {/* Background radial glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#7000ff]/5 blur-[120px]" />
-      </div>
+    <>
+      {/* ── Tall wrapper — creates vertical scroll distance ─────────── */}
+      <div ref={wrapperRef} id="projects" style={{ position: "relative" }}>
 
-      {/* Header row */}
-      <div className="relative z-10 flex items-end justify-between px-8 md:px-16 pt-10 pb-6 border-b border-white/5">
-        <div>
-          <span className="text-xs font-bold tracking-widest text-[#00f2fe] uppercase mb-2 block">
-            Portfolio Case Studies
-          </span>
-          <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
-            Featured Projects
-          </h2>
-        </div>
-        {/* Scroll hint */}
-        <div className="hidden md:flex items-center gap-2 text-slate-500 text-xs font-mono tracking-widest">
-          <ArrowRight className="w-4 h-4 animate-pulse text-[#00f2fe]" />
-          SCROLL TO EXPLORE
-        </div>
-        {/* Counter */}
-        <div className="flex items-baseline gap-1 text-white">
-          <span
-            ref={counterRef}
-            className="text-4xl font-extrabold text-[#00f2fe] tabular-nums"
-          >
-            01
-          </span>
-          <span className="text-slate-600 font-mono text-lg">
-            / 0{projects.length}
-          </span>
-        </div>
-      </div>
-
-      {/* Progress bar */}
-      <div className="relative h-[2px] bg-white/5 mx-8 md:mx-16">
+        {/* ── Sticky viewport panel — stays fixed while wrapper scrolls ─ */}
         <div
-          ref={progressRef}
-          className="h-full bg-gradient-to-r from-[#00f2fe] via-[#7000ff] to-[#ff007b] transition-none"
-          style={{ width: "0%" }}
-        />
-      </div>
-
-      {/* Horizontal track */}
-      <div
-        className="relative flex-1 flex items-center overflow-visible"
-        style={{ height: "calc(100svh - 120px)" }}
-      >
-        <div
-          ref={trackRef}
-          className="flex gap-8 pl-8 md:pl-16 will-change-transform"
-          style={{ perspective: "1200px" }}
+          ref={sectionRef}
+          style={{
+            position: "sticky",
+            top: 0,
+            height: "100vh",
+            overflow: "hidden",
+            background: "#03030f",
+            borderTop: "1px solid rgba(255,255,255,0.05)",
+          }}
         >
-          {projects.map((project, idx) => (
+          {/* Ambient bg glow */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              background:
+                "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(112,0,255,0.07) 0%, transparent 70%)",
+            }}
+          />
+
+          {/* ── Header bar ──────────────────────────────────────────── */}
+          <div
+            style={{
+              position: "relative",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "space-between",
+              padding: "2rem 4rem 1rem",
+              borderBottom: "1px solid rgba(255,255,255,0.05)",
+            }}
+          >
+            <div>
+              <span
+                style={{
+                  display: "block",
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.2em",
+                  color: "#00f2fe",
+                  textTransform: "uppercase",
+                  marginBottom: "0.4rem",
+                }}
+              >
+                Portfolio Case Studies
+              </span>
+              <h2
+                style={{
+                  fontSize: "clamp(1.8rem, 4vw, 3rem)",
+                  fontWeight: 800,
+                  color: "#fff",
+                  margin: 0,
+                  lineHeight: 1.1,
+                }}
+              >
+                Featured Projects
+              </h2>
+            </div>
+
+            {/* Scroll hint */}
             <div
-              key={idx}
-              className="proj-card flex-shrink-0 flex flex-col overflow-hidden"
               style={{
-                width: "clamp(320px, 36vw, 520px)",
-                height: "calc(100svh - 180px)",
-                background: "rgba(9,9,21,0.8)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderRadius: "1.25rem",
-                backdropFilter: "blur(20px)",
-                transformStyle: "preserve-3d",
-                transformOrigin: "left center",
-                willChange: "transform, opacity",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                color: "rgba(255,255,255,0.3)",
+                fontSize: "0.65rem",
+                fontFamily: "monospace",
+                letterSpacing: "0.15em",
+                textTransform: "uppercase",
               }}
             >
-              {/* Image */}
-              <div
-                className="relative w-full flex-shrink-0 overflow-hidden group"
-                style={{ height: "42%" }}
+              <ArrowRight size={14} style={{ color: "#00f2fe" }} />
+              Scroll to explore
+            </div>
+
+            {/* Counter */}
+            <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem" }}>
+              <span
+                ref={counterRef}
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: 900,
+                  color: "#00f2fe",
+                  fontVariantNumeric: "tabular-nums",
+                  lineHeight: 1,
+                }}
               >
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  sizes="520px"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  priority={idx === 0}
-                />
-                {/* Gradient overlay */}
+                01
+              </span>
+              <span style={{ color: "rgba(255,255,255,0.2)", fontSize: "1.1rem", fontFamily: "monospace" }}>
+                / 0{projects.length}
+              </span>
+            </div>
+          </div>
+
+          {/* ── Progress bar ─────────────────────────────────────────── */}
+          <div style={{ height: "2px", background: "rgba(255,255,255,0.05)", margin: "0 4rem" }}>
+            <div
+              ref={progressRef}
+              style={{
+                height: "100%",
+                width: "0%",
+                background: "linear-gradient(90deg, #00f2fe, #7000ff, #ff007b)",
+                transition: "none",
+              }}
+            />
+          </div>
+
+          {/* ── Horizontal track ─────────────────────────────────────── */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              height: "calc(100vh - 110px)",
+              perspective: "1400px",
+              perspectiveOrigin: "center center",
+            }}
+          >
+            <div
+              ref={trackRef}
+              style={{
+                display: "flex",
+                gap: "2rem",
+                paddingLeft: "4rem",
+                paddingRight: "4rem",
+                willChange: "transform",
+                transformStyle: "preserve-3d",
+              }}
+            >
+              {projects.map((project, idx) => (
                 <div
-                  className="absolute inset-0"
+                  key={idx}
+                  className="proj-card"
                   style={{
-                    background:
-                      "linear-gradient(to bottom, transparent 40%, rgba(9,9,21,0.95) 100%)",
+                    flexShrink: 0,
+                    width: "clamp(300px, 35vw, 500px)",
+                    height: "calc(100vh - 180px)",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: "1.25rem",
+                    overflow: "hidden",
+                    background: "rgba(9,9,21,0.85)",
+                    border: `1px solid ${project.color}20`,
+                    backdropFilter: "blur(20px)",
+                    willChange: "transform",
+                    transformStyle: "preserve-3d",
+                    transition: "box-shadow 0.3s ease",
                   }}
-                />
-                {/* Index chip */}
-                <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-xs font-mono text-slate-400">
-                  {String(idx + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-                </div>
-                {/* Color accent dot */}
-                <div
-                  className="absolute bottom-4 right-4 w-3 h-3 rounded-full blur-[1px]"
-                  style={{ backgroundColor: project.color, boxShadow: `0 0 12px ${project.color}` }}
-                />
-              </div>
-
-              {/* Content */}
-              <div className="flex flex-col flex-1 p-7 gap-4 overflow-hidden">
-                <h3
-                  className="text-xl md:text-2xl font-bold text-white leading-snug"
-                  style={{ textShadow: `0 0 40px ${project.color}30` }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = `0 30px 80px -20px ${project.color}40, 0 0 0 1px ${project.color}30`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
                 >
-                  {project.title}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed font-light line-clamp-4">
-                  {project.desc}
-                </p>
-
-                {/* Tech stack */}
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {project.tech.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-1 text-[10px] font-bold tracking-wider rounded-md"
+                  {/* Image area */}
+                  <div style={{ position: "relative", height: "42%", flexShrink: 0, overflow: "hidden" }}>
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      sizes="500px"
+                      style={{ objectFit: "cover" }}
+                      priority={idx < 2}
+                    />
+                    {/* Gradient scrim */}
+                    <div
                       style={{
-                        color: project.color,
-                        background: `${project.color}12`,
-                        border: `1px solid ${project.color}25`,
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(to bottom, transparent 40%, rgba(9,9,21,0.98) 100%)",
+                      }}
+                    />
+                    {/* Index chip */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "1rem",
+                        left: "1rem",
+                        padding: "0.25rem 0.75rem",
+                        borderRadius: "999px",
+                        background: "rgba(0,0,0,0.5)",
+                        backdropFilter: "blur(8px)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        fontSize: "0.65rem",
+                        fontFamily: "monospace",
+                        color: "rgba(255,255,255,0.5)",
+                        letterSpacing: "0.1em",
                       }}
                     >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+                      {String(idx + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+                    </div>
+                    {/* Accent glow dot */}
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "1rem",
+                        right: "1rem",
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        backgroundColor: project.color,
+                        boxShadow: `0 0 16px ${project.color}`,
+                      }}
+                    />
+                  </div>
 
-                {/* CTA row */}
-                <div
-                  className="flex items-center gap-5 pt-4 border-t"
-                  style={{ borderColor: "rgba(255,255,255,0.06)" }}
-                >
-                  <a
-                    href={project.demoLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold tracking-widest text-black transition-all duration-300 hover:scale-105 no-underline"
+                  {/* Content */}
+                  <div
                     style={{
-                      backgroundColor: project.color,
-                      boxShadow: `0 4px 20px ${project.color}40`,
+                      flex: 1,
+                      padding: "1.5rem 1.75rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.875rem",
+                      overflow: "hidden",
                     }}
                   >
-                    LIVE DEMO <ExternalLink className="w-3 h-3" />
-                  </a>
-                  <a
-                    href={project.gitLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-400 hover:text-white transition-colors duration-300 no-underline"
-                  >
-                    <Github className="w-4 h-4" /> GitHub
-                  </a>
+                    <h3
+                      style={{
+                        fontSize: "1.15rem",
+                        fontWeight: 700,
+                        color: "#fff",
+                        margin: 0,
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {project.title}
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "rgba(148,163,184,0.9)",
+                        lineHeight: 1.65,
+                        margin: 0,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 4,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {project.desc}
+                    </p>
+
+                    {/* Tech badges */}
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem", marginTop: "auto" }}>
+                      {project.tech.map((tag) => (
+                        <span
+                          key={tag}
+                          style={{
+                            padding: "0.2rem 0.6rem",
+                            borderRadius: "0.375rem",
+                            fontSize: "0.6rem",
+                            fontWeight: 700,
+                            letterSpacing: "0.08em",
+                            color: project.color,
+                            background: `${project.color}14`,
+                            border: `1px solid ${project.color}28`,
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* CTA row */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "1rem",
+                        paddingTop: "0.75rem",
+                        borderTop: "1px solid rgba(255,255,255,0.06)",
+                      }}
+                    >
+                      <a
+                        href={project.demoLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.375rem",
+                          padding: "0.45rem 1.1rem",
+                          borderRadius: "999px",
+                          fontSize: "0.65rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase",
+                          color: "#000",
+                          backgroundColor: project.color,
+                          boxShadow: `0 4px 20px ${project.color}50`,
+                          textDecoration: "none",
+                          transition: "transform 0.2s, box-shadow 0.2s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                      >
+                        Live Demo <ExternalLink size={11} />
+                      </a>
+                      <a
+                        href={project.gitLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.375rem",
+                          fontSize: "0.65rem",
+                          fontWeight: 700,
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase",
+                          color: "rgba(148,163,184,0.7)",
+                          textDecoration: "none",
+                          transition: "color 0.2s",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(148,163,184,0.7)")}
+                      >
+                        <Github size={14} /> GitHub
+                      </a>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
+
+              {/* End spacer */}
+              <div style={{ flexShrink: 0, width: "4rem" }} />
             </div>
-          ))}
-
-          {/* End spacer */}
-          <div className="flex-shrink-0 w-16 md:w-24" />
+          </div>
         </div>
+        {/* End sticky section */}
       </div>
-
-      {/* Mobile fallback grid — shown only on small screens */}
-      <style>{`
-        @media (max-width: 767px) {
-          .projects-section { height: auto !important; overflow: visible !important; }
-          .projects-section .flex.gap-8 { flex-direction: column; padding: 1.5rem; }
-          .proj-card { width: 100% !important; height: auto !important; flex-shrink: unset !important; }
-          .proj-card > div:first-child { height: 220px !important; }
-        }
-      `}</style>
-    </section>
+      {/* End tall wrapper */}
+    </>
   );
 }
