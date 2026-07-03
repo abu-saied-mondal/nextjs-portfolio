@@ -119,13 +119,17 @@ export default function Projects() {
             opacity = 1 - fadeFactor;
           }
 
+          // Dynamically compute z-index so closer cards are sorted on top and clickable
+          const depthZIndex = Math.round(10000 + currentZ);
+
           // Apply styles via GSAP
           gsap.set(card, {
             z: currentZ,
             x: x,
             rotateY: rotateY,
             opacity: opacity,
-            pointerEvents: (currentZ > 120 || currentZ < -800) ? "none" : "auto",
+            zIndex: depthZIndex,
+            pointerEvents: (currentZ > 300 || currentZ < -1000) ? "none" : "auto",
             visibility: opacity <= 0 ? "hidden" : "visible",
           });
         });
