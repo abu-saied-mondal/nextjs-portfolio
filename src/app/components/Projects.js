@@ -38,6 +38,14 @@ export default function Projects() {
 
   const projects = [
     {
+      title: "HerCompass - AI Health Companion",
+      desc: "A personalized AI-powered health companion designed specifically for women 45+. It tracks symptoms, mood, sleep, and energy, then transforms logs into predictive, actionable wellness insights using modern full-stack architecture.",
+      tech: ["MERN Stack", "Node.js", "MongoDB", "AI Processing", "Predictive Analytics"],
+      image: "/hercompass.jpg",
+      demoLink: "https://newhercompass.vercel.app/",
+      gitLink: "https://github.com/abu-saied-mondal",
+    },
+    {
       title: "IconsGeek",
       desc: "A subscription-based icon platform with dynamic SVG rendering, real-time customization, dynamic downloads (PNG/JPG), and Stripe checkout payments. Independently developed and deployed.",
       tech: ["Next.js", "Laravel", "MySQL", "Stripe API", "REST APIs"],
@@ -83,7 +91,7 @@ export default function Projects() {
 
       <div
         ref={gridRef}
-        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 gap-8"
       >
         {projects.map((project, idx) => (
           <div
