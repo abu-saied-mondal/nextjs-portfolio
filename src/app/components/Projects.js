@@ -38,6 +38,14 @@ export default function Projects() {
 
   const projects = [
     {
+      title: "Enterprise HRM Ecosystem",
+      desc: "An all-in-one Human Resource Management System to automate, manage, and empower the entire workforce. Features include HR Core, Recruitment & ATS (with AI Resume screening), Biometric/GPS Attendance, Leave Management, and Payroll.",
+      tech: ["Laravel", "MySQL", "PostgreSQL", "AI Features", "Real-time Analytics"],
+      image: "/hrm_system.jpg",
+      demoLink: "https://ascinate.in/demo/hrm_system",
+      gitLink: "https://github.com/abu-saied-mondal",
+    },
+    {
       title: "HerCompass - AI Health Companion",
       desc: "A personalized AI-powered health companion designed specifically for women 45+. It tracks symptoms, mood, sleep, and energy, then transforms logs into predictive, actionable wellness insights using modern full-stack architecture.",
       tech: ["MERN Stack", "Node.js", "MongoDB", "AI Processing", "Predictive Analytics"],
@@ -91,7 +99,7 @@ export default function Projects() {
 
       <div
         ref={gridRef}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
       >
         {projects.map((project, idx) => (
           <div
@@ -139,6 +147,8 @@ export default function Projects() {
                 <div className="flex items-center gap-4 pt-2 border-t border-white/5">
                   <a
                     href={project.demoLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-[#00f2fe] hover:text-white transition-colors duration-300 no-underline"
                   >
                     LIVE DEMO <ExternalLink className="w-3.5 h-3.5" />
