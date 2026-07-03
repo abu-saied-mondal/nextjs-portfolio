@@ -6,23 +6,41 @@ import { Cpu, Database, Layout, Settings } from "lucide-react";
 
 export default function Skills() {
   const sectionRef = useRef(null);
+  const headerRef = useRef(null);
   const gridRef = useRef(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const categories = gridRef.current.querySelectorAll(".skill-category-card");
-
     const ctx = gsap.context(() => {
-      // Fade in and translate cards from bottom
+      // Header entrance
       gsap.fromTo(
-        categories,
+        headerRef.current,
         { opacity: 0, y: 40 },
         {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          stagger: 0.12,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 78%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
+
+      // Card stagger entrance
+      const categories = gridRef.current.querySelectorAll(".skill-category-card");
+      gsap.fromTo(
+        categories,
+        { opacity: 0, y: 50, rotateX: 8 },
+        {
+          opacity: 1,
+          y: 0,
+          rotateX: 0,
+          duration: 0.75,
+          stagger: 0.14,
           ease: "power3.out",
           scrollTrigger: {
             trigger: gridRef.current,
@@ -32,14 +50,14 @@ export default function Skills() {
         }
       );
 
-      // Animate progress bars once cards appear
+      // Progress bars
       const progressBars = gridRef.current.querySelectorAll(".progress-bar-fill");
       gsap.fromTo(
         progressBars,
         { width: "0%" },
         {
           width: (i, target) => target.dataset.percent,
-          duration: 1.2,
+          duration: 1.4,
           ease: "power2.out",
           stagger: 0.05,
           scrollTrigger: {
@@ -49,6 +67,20 @@ export default function Skills() {
           },
         }
       );
+
+      // --- Recession: scale back as user scrolls past ---
+      gsap.to(sectionRef.current, {
+        scale: 0.88,
+        opacity: 0.25,
+        filter: "blur(4px)",
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "bottom 60%",
+          end: "bottom 10%",
+          scrub: 1.2,
+        },
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -58,6 +90,7 @@ export default function Skills() {
     {
       title: "Frontend & Mobile Engineering",
       icon: <Layout className="w-5 h-5 text-[#00f2fe]" />,
+      accent: "#00f2fe",
       skills: [
         { name: "HTML / CSS / JavaScript", level: "95%" },
         { name: "React / Next.js", level: "90%" },
@@ -68,6 +101,7 @@ export default function Skills() {
     {
       title: "Backend Development",
       icon: <Cpu className="w-5 h-5 text-[#7000ff]" />,
+      accent: "#7000ff",
       skills: [
         { name: "Java (Core & Advanced)", level: "85%" },
         { name: "PHP / Laravel MVC", level: "80%" },
@@ -78,6 +112,7 @@ export default function Skills() {
     {
       title: "Databases & CMS",
       icon: <Database className="w-5 h-5 text-[#ff7b00]" />,
+      accent: "#ff7b00",
       skills: [
         { name: "MySQL / PostgreSQL", level: "85%" },
         { name: "MongoDB", level: "80%" },
@@ -88,6 +123,7 @@ export default function Skills() {
     {
       title: "Tools & Logical Concepts",
       icon: <Settings className="w-5 h-5 text-[#ff007b]" />,
+      accent: "#ff007b",
       skills: [
         { name: "Git & Version Control", level: "85%" },
         { name: "Logical Programming & DSA", level: "80%" },
@@ -101,58 +137,104 @@ export default function Skills() {
     <section
       id="skills"
       ref={sectionRef}
-      className="py-24 px-6 md:px-12 max-w-7xl mx-auto border-t border-white/5 bg-[#03030f]"
+      className="py-28 px-6 md:px-12 border-t border-white/5 bg-[#03030f] relative overflow-hidden"
+      style={{ transformOrigin: "center top", willChange: "transform, opacity, filter" }}
     >
-      <div className="text-center mb-16">
-        <span className="text-xs font-bold tracking-widest text-[#7000ff] uppercase mb-3 block">
-          Skills & Technologies
-        </span>
-        <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
-          My Technical Arsenal
-        </h2>
-        <p className="text-slate-400 font-light max-w-xl mx-auto mt-4 leading-relaxed">
-          A comprehensive suite of modern front-end design tools, back-end development environments, databases, and continuous delivery flows.
-        </p>
-      </div>
+      {/* Ambient glow */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 rounded-full bg-[#7000ff]/5 blur-[100px] pointer-events-none" />
 
-      <div
-        ref={gridRef}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8"
-      >
-        {skillsData.map((category, idx) => (
-          <div
-            key={idx}
-            className="skill-category-card glow-card-orange p-8 flex flex-col gap-6"
-          >
-            {/* Header */}
-            <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-              <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center border border-white/10">
-                {category.icon}
-              </div>
-              <h3 className="text-lg font-bold text-white">{category.title}</h3>
-            </div>
+      <div className="max-w-7xl mx-auto">
+        <div ref={headerRef} className="text-center mb-16">
+          <span className="text-xs font-bold tracking-widest text-[#7000ff] uppercase mb-4 flex items-center justify-center gap-2">
+            <span className="w-6 h-[2px] bg-[#7000ff] inline-block" />
+            Skills & Technologies
+            <span className="w-6 h-[2px] bg-[#7000ff] inline-block" />
+          </span>
+          <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+            My Technical{" "}
+            <span className="text-gradient-cyan-purple">Arsenal</span>
+          </h2>
+          <p className="text-slate-400 font-light max-w-xl mx-auto mt-5 leading-relaxed text-[15px]">
+            A comprehensive suite of modern front-end tools, back-end environments,
+            databases, and continuous delivery flows — built through years of real-world shipping.
+          </p>
+        </div>
 
-            {/* List */}
-            <div className="flex flex-col gap-5">
-              {category.skills.map((skill, sIdx) => (
-                <div key={sIdx} className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="font-semibold text-slate-300">{skill.name}</span>
-                    <span className="font-mono text-slate-400 text-xs font-medium">{skill.level}</span>
-                  </div>
-                  {/* Progress track */}
-                  <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
-                    <div
-                      className="progress-bar-fill h-full rounded-full bg-gradient-to-r from-[#ff7b00] to-[#ff007b]"
-                      data-percent={skill.level}
-                      style={{ width: "0%" }}
-                    />
-                  </div>
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {skillsData.map((category, idx) => (
+            <div
+              key={idx}
+              className="skill-category-card relative p-8 flex flex-col gap-6 rounded-2xl overflow-hidden group"
+              style={{
+                background: "rgba(9,9,21,0.75)",
+                border: `1px solid ${category.accent}18`,
+                backdropFilter: "blur(16px)",
+                transformStyle: "preserve-3d",
+                transition: "border-color 0.4s ease, box-shadow 0.4s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = `${category.accent}35`;
+                e.currentTarget.style.boxShadow = `0 20px 60px -20px ${category.accent}30, inset 0 1px 0 ${category.accent}20`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = `${category.accent}18`;
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {/* Corner glow */}
+              <div
+                className="absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-0 group-hover:opacity-100 blur-3xl transition-opacity duration-500 pointer-events-none"
+                style={{ backgroundColor: category.accent }}
+              />
+
+              {/* Header */}
+              <div className="flex items-center gap-3 border-b border-white/5 pb-5">
+                <div
+                  className="w-11 h-11 rounded-xl flex items-center justify-center border"
+                  style={{
+                    background: `${category.accent}12`,
+                    borderColor: `${category.accent}25`,
+                  }}
+                >
+                  {category.icon}
                 </div>
-              ))}
+                <h3 className="text-[15px] font-bold text-white">{category.title}</h3>
+              </div>
+
+              {/* Skills list */}
+              <div className="flex flex-col gap-5 relative z-10">
+                {category.skills.map((skill, sIdx) => (
+                  <div key={sIdx} className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-slate-300">{skill.name}</span>
+                      <span
+                        className="font-mono text-xs font-semibold"
+                        style={{ color: category.accent }}
+                      >
+                        {skill.level}
+                      </span>
+                    </div>
+                    {/* Track */}
+                    <div className="w-full h-[3px] rounded-full bg-white/5 overflow-hidden">
+                      <div
+                        className="progress-bar-fill h-full rounded-full"
+                        data-percent={skill.level}
+                        style={{
+                          width: "0%",
+                          background: `linear-gradient(90deg, ${category.accent}80, ${category.accent})`,
+                          boxShadow: `0 0 8px ${category.accent}60`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
