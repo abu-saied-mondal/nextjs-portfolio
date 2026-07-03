@@ -38,6 +38,14 @@ export default function Projects() {
 
   const projects = [
     {
+      title: "ZTS India - Dynamic Corporate Portal",
+      desc: "A fully dynamic corporate website developed from scratch for a major company in Kolkata. Features a custom CMS (similar to WordPress) built with Laravel that lets admins manage pages, posts, media assets, navigation menus, and SEO metadata.",
+      tech: ["Laravel", "PHP", "MySQL", "Custom CMS", "SEO Management"],
+      image: "/zts_mockup.png",
+      demoLink: "https://ztsindia.com/",
+      gitLink: "https://github.com/abu-saied-mondal",
+    },
+    {
       title: "Enterprise HRM Ecosystem",
       desc: "An all-in-one Human Resource Management System to automate, manage, and empower the entire workforce. Features include HR Core, Recruitment & ATS (with AI Resume screening), Biometric/GPS Attendance, Leave Management, and Payroll.",
       tech: ["Laravel", "MySQL", "PostgreSQL", "AI Features", "Real-time Analytics"],
