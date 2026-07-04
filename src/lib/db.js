@@ -5,7 +5,7 @@ import path from "path";
 const LOCAL_DB_PATH = path.join(process.cwd(), "data", "db.json");
 
 // MongoDB configuration
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URL;
 const DB_NAME = process.env.MONGODB_DB || "portfolio";
 
 let client = null;
