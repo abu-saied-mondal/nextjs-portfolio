@@ -40,10 +40,22 @@
       "icon": "Layout",
       "accent": "#00f2fe",
       "skills": [
-        { "name": "HTML / CSS / JavaScript", "level": "95%" },
-        { "name": "React / Next.js", "level": "90%" },
-        { "name": "React Native / Expo", "level": "85%" },
-        { "name": "GSAP / Tailwind CSS", "level": "90%" }
+        {
+          "name": "HTML / CSS / JavaScript",
+          "level": "95%"
+        },
+        {
+          "name": "React / Next.js",
+          "level": "90%"
+        },
+        {
+          "name": "React Native / Expo",
+          "level": "85%"
+        },
+        {
+          "name": "GSAP / Tailwind CSS",
+          "level": "90%"
+        }
       ]
     },
     {
@@ -51,10 +63,22 @@
       "icon": "Cpu",
       "accent": "#7000ff",
       "skills": [
-        { "name": "Java (Core & Advanced)", "level": "85%" },
-        { "name": "PHP / Laravel MVC", "level": "80%" },
-        { "name": "Node.js / Express", "level": "85%" },
-        { "name": "REST APIs & Postman", "level": "90%" }
+        {
+          "name": "Java (Core & Advanced)",
+          "level": "85%"
+        },
+        {
+          "name": "PHP / Laravel MVC",
+          "level": "80%"
+        },
+        {
+          "name": "Node.js / Express",
+          "level": "85%"
+        },
+        {
+          "name": "REST APIs & Postman",
+          "level": "90%"
+        }
       ]
     },
     {
@@ -62,10 +86,22 @@
       "icon": "Database",
       "accent": "#ff7b00",
       "skills": [
-        { "name": "MySQL / PostgreSQL", "level": "85%" },
-        { "name": "MongoDB", "level": "80%" },
-        { "name": "Strapi (Headless CMS)", "level": "75%" },
-        { "name": "JSON & Promises", "level": "90%" }
+        {
+          "name": "MySQL / PostgreSQL",
+          "level": "85%"
+        },
+        {
+          "name": "MongoDB",
+          "level": "80%"
+        },
+        {
+          "name": "Strapi (Headless CMS)",
+          "level": "75%"
+        },
+        {
+          "name": "JSON & Promises",
+          "level": "90%"
+        }
       ]
     },
     {
@@ -73,10 +109,22 @@
       "icon": "Settings",
       "accent": "#ff007b",
       "skills": [
-        { "name": "Git & Version Control", "level": "85%" },
-        { "name": "Logical Programming & DSA", "level": "80%" },
-        { "name": "Database Management (DBMS)", "level": "80%" },
-        { "name": "Performance Optimization", "level": "85%" }
+        {
+          "name": "Git & Version Control",
+          "level": "85%"
+        },
+        {
+          "name": "Logical Programming & DSA",
+          "level": "80%"
+        },
+        {
+          "name": "Database Management (DBMS)",
+          "level": "80%"
+        },
+        {
+          "name": "Performance Optimization",
+          "level": "85%"
+        }
       ]
     }
   ],
@@ -120,64 +168,106 @@
   ],
   "projects": [
     {
+      "id": "6",
+      "title": "Louis — Video Dating App",
+      "desc": "Tinder-style matchmaking with vertical video profiles, swipe gesture UX, and real-time Socket.IO messaging. Engineered performant video loading pipelines. Published live on the iOS App Store.",
+      "tech": [
+        "React Native Expo",
+        "Node.js",
+        "Socket.IO",
+        "MongoDB",
+        "Video Rendering"
+      ],
+      "image": "/ecommerce_mockup.png",
+      "demoLink": "https://apps.apple.com/in/app/louis-dating/id6472041327",
+      "gitLink": "https://github.com/abu-saied-mondal",
+      "color": "#7000ff",
+      "order": 0
+    },
+    {
       "id": "1",
       "title": "ZTS India — Dynamic Corporate Portal",
       "desc": "A fully dynamic corporate website built from scratch for a major Kolkata company. Features a custom WordPress-like CMS in Laravel — admins control pages, blogs, media, navigation, and SEO metadata entirely from a dashboard.",
-      "tech": ["Laravel", "PHP", "MySQL", "Custom CMS", "SEO Management"],
+      "tech": [
+        "Laravel",
+        "PHP",
+        "MySQL",
+        "Custom CMS",
+        "SEO Management"
+      ],
       "image": "/zts_mockup.png",
       "demoLink": "https://ztsindia.com/",
       "gitLink": "https://github.com/abu-saied-mondal",
-      "color": "#00f2fe"
+      "color": "#00f2fe",
+      "order": 1
     },
     {
       "id": "2",
       "title": "Enterprise HRM Ecosystem",
       "desc": "All-in-one HRM System with 25+ modules: HR Core, AI Resume Screening, Biometric/GPS Attendance, Leave Management, Payroll with Bank Transfer, LMS Training Portal, and Advanced Analytics.",
-      "tech": ["Laravel", "MySQL", "PostgreSQL", "AI Features", "Real-time Analytics"],
+      "tech": [
+        "Laravel",
+        "MySQL",
+        "PostgreSQL",
+        "AI Features",
+        "Real-time Analytics"
+      ],
       "image": "/hrm_system.jpg",
       "demoLink": "https://ascinate.in/demo/hrm_system",
       "gitLink": "https://github.com/abu-saied-mondal",
-      "color": "#7000ff"
+      "color": "#7000ff",
+      "order": 2
     },
     {
       "id": "3",
       "title": "HerCompass — AI Health Companion",
       "desc": "Personalized AI-powered health companion for women 45+. Tracks mood, symptoms, sleep, and energy — transforms daily logs into predictive, actionable wellness insights using intelligent AI pattern analysis.",
-      "tech": ["MERN Stack", "Node.js", "MongoDB", "AI Processing", "Predictive Analytics"],
+      "tech": [
+        "MERN Stack",
+        "Node.js",
+        "MongoDB",
+        "AI Processing",
+        "Predictive Analytics"
+      ],
       "image": "/hercompass.jpg",
       "demoLink": "https://newhercompass.vercel.app/",
       "gitLink": "https://github.com/abu-saied-mondal",
-      "color": "#ff007b"
-    },
-    {
-      "id": "4",
-      "title": "IconsGeek",
-      "desc": "Subscription-based icon marketplace with dynamic SVG rendering, real-time color/size customization, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed.",
-      "tech": ["Next.js", "Laravel", "MySQL", "Stripe API", "REST APIs"],
-      "image": "/dashboard_mockup.png",
-      "demoLink": "https://www.iconsgeek.com/",
-      "gitLink": "https://github.com/abu-saied-mondal",
-      "color": "#00f2fe"
+      "color": "#ff007b",
+      "order": 3
     },
     {
       "id": "5",
       "title": "SnapHive — Photo Sharing App",
       "desc": "Full-stack mobile social platform: public/private photo hives, in-app camera filters, one-tap email invites, Firebase cloud storage, real-time chat, and AI-based image generation built into the creator flow.",
-      "tech": ["React Native CLI", "Node.js", "Express", "Firebase", "AI APIs"],
+      "tech": [
+        "React Native CLI",
+        "Node.js",
+        "Express",
+        "Firebase",
+        "AI APIs"
+      ],
       "image": "/workspace_mockup.png",
       "demoLink": "#",
       "gitLink": "https://github.com/abu-saied-mondal",
-      "color": "#ff7b00"
+      "color": "#ff7b00",
+      "order": 4
     },
     {
-      "id": "6",
-      "title": "Louis — Video Dating App",
-      "desc": "Tinder-style matchmaking with vertical video profiles, swipe gesture UX, and real-time Socket.IO messaging. Engineered performant video loading pipelines. Published live on the iOS App Store.",
-      "tech": ["React Native Expo", "Node.js", "Socket.IO", "MongoDB", "Video Rendering"],
-      "image": "/ecommerce_mockup.png",
-      "demoLink": "https://apps.apple.com/in/app/louis-dating/id6472041327",
+      "id": "4",
+      "title": "IconsGeek",
+      "desc": "Subscription-based icon marketplace with dynamic SVG rendering, real-time color/size customization, downloadable PNG/JPG exports, and a full Stripe checkout flow. Independently architected and deployed.",
+      "tech": [
+        "Next.js",
+        "Laravel",
+        "MySQL",
+        "Stripe API",
+        "REST APIs"
+      ],
+      "image": "/dashboard_mockup.png",
+      "demoLink": "https://www.iconsgeek.com/",
       "gitLink": "https://github.com/abu-saied-mondal",
-      "color": "#7000ff"
+      "color": "#00f2fe",
+      "order": 5
     }
   ],
   "messages": []

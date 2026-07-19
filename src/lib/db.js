@@ -58,11 +58,25 @@ export async function getProjects() {
     const coll = mongo.db.collection("projects");
     const cursor = coll.find({});
     const projects = await cursor.toArray();
+    
+    // Sort projects in-memory so missing order fields gracefully fall back to end
+    projects.sort((a, b) => {
+      const orderA = a.order !== undefined ? a.order : 9999;
+      const orderB = b.order !== undefined ? b.order : 9999;
+      return orderA - orderB;
+    });
+
     // Normalize MongoDB _id to string id
     return projects.map(p => ({ ...p, id: p.id || p._id.toString(), _id: undefined }));
   } else {
     const local = await readLocalDb();
-    return local.projects || [];
+    const projects = local.projects || [];
+    projects.sort((a, b) => {
+      const orderA = a.order !== undefined ? a.order : 9999;
+      const orderB = b.order !== undefined ? b.order : 9999;
+      return orderA - orderB;
+    });
+    return projects;
   }
 }
 
@@ -89,7 +103,9 @@ export async function saveProject(project) {
       await coll.updateOne(query, { $set: data }, { upsert: true });
       return { ...project, id: projectId };
     } else {
-      // Create new project
+      // Create new project - append to the end of the order
+      const count = await coll.countDocuments();
+      data.order = count;
       const result = await coll.insertOne(data);
       return { ...data, id: result.insertedId.toString() };
     }
@@ -108,12 +124,59 @@ export async function saveProject(project) {
     } else {
       // Create
       const newId = Date.now().toString();
-      const newProject = { ...project, id: newId };
+      const count = local.projects.length;
+      const newProject = { ...project, id: newId, order: count };
       local.projects.push(newProject);
       project.id = newId;
+      project.order = count;
     }
     await writeLocalDb(local);
     return project;
+  }
+}
+
+export async function reorderProjects(orderedIds) {
+  const mongo = await getMongoClient();
+  if (mongo) {
+    const { ObjectId } = await import("mongodb");
+    const coll = mongo.db.collection("projects");
+    
+    const promises = orderedIds.map((id, index) => {
+      let query;
+      try {
+        query = { _id: new ObjectId(id) };
+      } catch (e) {
+        query = { id: id };
+      }
+      return coll.updateOne(query, { $set: { order: index } });
+    });
+    
+    await Promise.all(promises);
+    return true;
+  } else {
+    const local = await readLocalDb();
+    if (!local.projects) return false;
+    
+    const reordered = [];
+    orderedIds.forEach(id => {
+      const proj = local.projects.find(p => p.id === id);
+      if (proj) reordered.push(proj);
+    });
+    
+    local.projects.forEach(proj => {
+      if (!orderedIds.includes(proj.id)) {
+        reordered.push(proj);
+      }
+    });
+
+    // Update their order indexes
+    reordered.forEach((p, idx) => {
+      p.order = idx;
+    });
+    
+    local.projects = reordered;
+    await writeLocalDb(local);
+    return true;
   }
 }
 

@@ -189,6 +189,49 @@ export default function AdminDashboard() {
     }
   };
 
+  // --- Drag and Drop: Projects ---
+  const [draggedIndex, setDraggedIndex] = useState(null);
+
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const reordered = [...projects];
+    const draggedItem = reordered[draggedIndex];
+    reordered.splice(draggedIndex, 1);
+    reordered.splice(index, 0, draggedItem);
+
+    setDraggedIndex(index);
+    setProjects(reordered);
+  };
+
+  const handleDragEnd = async () => {
+    setDraggedIndex(null);
+    const orderedIds = projects.map(p => p.id);
+    try {
+      const res = await fetch("/api/projects", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reorder: true, orderedIds })
+      });
+      const data = await res.json();
+      if (!data.success) {
+        showFeedback("error", "Failed to save project order.");
+        loadDashboardData();
+      } else {
+        showFeedback("success", "Project order updated successfully.");
+      }
+    } catch (err) {
+      showFeedback("error", "Error saving project order.");
+      loadDashboardData();
+    }
+  };
+
   // --- CRUD: Site Content (About, Stats, Skills, Experience) ---
   const handleSaveContent = async () => {
     try {
@@ -530,11 +573,20 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {projects.map((proj) => (
+                  {projects.map((proj, idx) => (
                     <div 
                       key={proj.id}
-                      className="p-5 rounded-2xl border bg-[#03030f]/60 hover:bg-[#03030f] transition-all flex flex-col justify-between gap-4"
-                      style={{ borderColor: `${proj.color}25` }}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, idx)}
+                      onDragOver={(e) => handleDragOver(e, idx)}
+                      onDragEnd={handleDragEnd}
+                      className={`p-5 rounded-2xl border bg-[#03030f]/60 hover:bg-[#03030f] transition-all flex flex-col justify-between gap-4 cursor-grab active:cursor-grabbing ${
+                        draggedIndex === idx ? "opacity-30 border-dashed scale-[0.98]" : ""
+                      }`}
+                      style={{ 
+                        borderColor: draggedIndex === idx ? proj.color : `${proj.color}25`,
+                        boxShadow: draggedIndex === idx ? `0 10px 25px -5px ${proj.color}25` : "none"
+                      }}
                     >
                       <div className="flex flex-col gap-2.5">
                         <div className="flex justify-between items-start">

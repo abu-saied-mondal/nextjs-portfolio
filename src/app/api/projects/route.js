@@ -66,6 +66,14 @@ export async function PUT(req) {
     }
 
     const body = await req.json();
+
+    // Check if this is a reordering request
+    if (body.reorder && Array.isArray(body.orderedIds)) {
+      const { reorderProjects } = await import("@/lib/db");
+      const success = await reorderProjects(body.orderedIds);
+      return NextResponse.json({ success });
+    }
+
     const { id, title, desc, tech, image, demoLink, gitLink, color } = body;
 
     if (!id || !title || !desc) {
