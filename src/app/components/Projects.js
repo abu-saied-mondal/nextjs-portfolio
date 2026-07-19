@@ -14,7 +14,7 @@ export default function Projects() {
   const [projects, setProjects] = useState([
     {
       id: "1",
-      title: "ZTS India — Dynamic Corporate Portal",
+      title: "India — Dynamic Corporate Portal",
       desc: "A fully dynamic corporate website built from scratch for a major Kolkata company. Features a custom WordPress-like CMS in Laravel — admins control pages, blogs, media, navigation, and SEO metadata entirely from a dashboard.",
       tech: ["Laravel", "PHP", "MySQL", "Custom CMS", "SEO Management"],
       image: "/zts_mockup.png",
@@ -117,7 +117,7 @@ export default function Projects() {
       scrub: 1.0,
       onUpdate: (self) => {
         const currentCameraZ = self.progress * scrollDistance;
-        
+
         cards.forEach((card, i) => {
           const isEven = i % 2 === 0;
           const initialZ = -i * cardSpacing;
@@ -188,7 +188,7 @@ export default function Projects() {
     <>
       {/* ── Desktop View (3D Hallway Walkthrough) ───────────────────── */}
       <div className="hidden md:block" ref={wrapperRef} style={{ position: "relative" }}>
-        
+
         {/* Sticky viewport panel */}
         <div
           ref={sectionRef}
